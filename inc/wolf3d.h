@@ -6,7 +6,7 @@
 /*   By: cdittric <cdittric@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/18 16:28:34 by cdittric          #+#    #+#             */
-/*   Updated: 2018/08/18 18:57:02 by cdittric         ###   ########.fr       */
+/*   Updated: 2018/08/18 19:04:19 by cdittric         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,6 +114,19 @@ typedef struct			s_mat2
 	t_sca	m[4];
 }						t_mat2;
 
+typedef struct s_map	t_map;
+
+struct					s_map
+{
+	int		fd;
+	t_map	*next;
+}
+
+/*
+** TODO:
+** Move map information in chained list node t_map.
+*/
+
 typedef struct			s_env
 {
 	void		*mlx;
@@ -128,6 +141,7 @@ typedef struct			s_env
 	t_vec3		origin_rot;
 	t_mat4		cam_mat;
 	int			**map;
+	t_map		*map_list;
 	t_ivec		mdim;
 }				t_env;
 

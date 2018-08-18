@@ -6,7 +6,7 @@
 /*   By: njaber <neyl.jaber@gmail.com>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/18 17:01:19 by njaber            #+#    #+#             */
-/*   Updated: 2018/08/18 18:57:07 by cdittric         ###   ########.fr       */
+/*   Updated: 2018/08/18 19:03:39 by cdittric         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 #include "mlx.h"
 #include "gnl.h"
 
-static void		launch_window(t_ptr *p)
+static void		launch_window(t_env *p)
 {
 	if ((init_new_win(p->mlx, p->win, (t_ivec){1200, 800}, "Wolf3D")) == 0)
 		ft_error("[Erreur] Failed to initialize window\n");
@@ -23,7 +23,7 @@ static void		launch_window(t_ptr *p)
 	mlx_loop(p->mlx);
 }
 
-static void		read_map_line(t_ptr *p, char *line, int y)
+static void		read_map_line(t_env *p, char *line, int y)
 {
 	int		i;
 	char	*tmp;
@@ -46,7 +46,7 @@ static void		read_map_line(t_ptr *p, char *line, int y)
 	}
 }
 
-static void		read_map(t_ptr *p, int fd)
+static void		read_map(t_env *p, int fd)
 {
 	int		i;
 	int		ret;
@@ -69,23 +69,24 @@ static void		read_map(t_ptr *p, int fd)
 	}
 }
 
-void			parse_arguments(t_env *env)
+void			parse_arguments(t_env *env, int argc, char *argv)
 {
-
+	if (argc != 2)
+		ft_error("You need to give a single map file as argument\n");
+	if ((fd = open(argv[1], O_RDONLY)) < 0)
+		ft_error("Could not read file\n");
+}
 
 int				main(int argc, char **argv)
 {
 	t_env	env;
 	int		fd;
 
-	if (argc != 2)
-		ft_error("You need to give a single map file as argument\n");
-	if ((fd = open(argv[1], O_RDONLY)) < 0)
-		ft_error("Could not read file\n");
+	init_environment(&env);
+	parse_argument(&env, argc, argv);
 	read_map(&env, fd);
 	close(fd);
 	if ((env.mlx = mlx_init()) == 0)
 		ft_error("[Error] Failed to initialize mlx\n");
-	init_environment(&env);
-	launch_window(&p);
+	launch_window(&env);
 }
