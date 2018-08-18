@@ -6,18 +6,25 @@
 /*   By: cdittric <cdittric@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/18 16:28:34 by cdittric          #+#    #+#             */
-/*   Updated: 2018/08/18 19:04:19 by cdittric         ###   ########.fr       */
+/*   Updated: 2018/08/18 20:37:53 by cdittric         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef WOLF3D_H
 # define WOLF3D_H
-#include "stdio.h"
+#include <stdio.h>
 # include <stdlib.h>
 # include <unistd.h>
+# include <fcntl.h>
 # include <math.h>
 # include "mlx.h"
 # include "libft.h"
+# include "gnl.h"
+
+// NOTE: Window width and height are set in parse arguments.
+
+# define DEFAULT_WINDOW_WIDTH 1200
+# define DEFAULT_WINDOW_HEIGHT 800
 
 # define EVENT_KEY_PRESS 2
 # define EVENT_KEY_RELEASE 3
@@ -119,6 +126,8 @@ typedef struct s_map	t_map;
 struct					s_map
 {
 	int		fd;
+	char	*path;
+	t_map	**self;
 	t_map	*next;
 }
 
@@ -126,6 +135,18 @@ struct					s_map
 ** TODO:
 ** Move map information in chained list node t_map.
 */
+
+typedef struct	s_win {
+	void				*mlx;
+	void				*win;
+	t_img				img;
+	int					w;
+	int					h;
+	t_ivec				size; //TODO: Delete size. Replaced by w and h.
+	int					frame;
+	float				fps;
+	unsigned long		frames[30];
+}				t_win;
 
 typedef struct			s_env
 {
@@ -146,18 +167,18 @@ typedef struct			s_env
 }				t_env;
 
 void			init_environment(t_env *env);
-void			end_environment(t_env *env);
+void			end_environment(t_env *env, int status);
 void			set_hooks(t_ptr *env);
 
-int				loop_hook(void *parm);
+int				loop_hook(t_env *env);
 
-int				button_press_hook(int button, int x, int y, void *parms);
-int				button_release_hook(int button, int x, int y, void *parms);
-int				motion_hook(int x, int y, void *parm);
-int				key_press_hook(int key_code, void *parm);
-int				key_release_hook(int key_code, void *parm);
-void			move(t_ptr *p);
+int				button_press_hook(int button, int x, int y, t_env *env);
+int				button_release_hook(int button, int x, int y, t_env *env);
+int				motion_hook(int x, int y, t_env *env);
+int				key_press_hook(int key_code, t_env *env);
+int				key_release_hook(int key_code, t_env *env);
+void			move(t_env *env);
 
-void			display(t_ptr *p);
+void			display(t_env *env);
 
 #endif

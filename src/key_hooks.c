@@ -6,39 +6,39 @@
 /*   By: njaber <neyl.jaber@gmail.com>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/20 14:52:32 by njaber            #+#    #+#             */
-/*   Updated: 2018/08/18 12:53:56 by njaber           ###   ########.fr       */
+/*   Updated: 2018/08/18 20:25:18 by cdittric         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "wolf.h"
 #include <math.h>
 
-void			move(t_ptr *p)
+void			move(t_ptr *env)
 {
 	t_vec3		rot;
 
-	rot = (t_vec3){p->rot.x * M_PI / 180, p->rot.y * M_PI / 180,
-		p->rot.z * M_PI / 180};
-	if (p->keys[K_UP])
-		p->pos = (t_vec3){p->pos.x - 0.5 * sin(rot.y), p->pos.y,
-			p->pos.z + 0.5 * cos(rot.y)};
-	if (p->keys[K_DOWN])
-		p->pos = (t_vec3){p->pos.x + 0.5 * sin(rot.y), p->pos.y,
-			p->pos.z - 0.5 * cos(rot.y)};
-	if (p->keys[K_LEFT])
-		p->pos = (t_vec3){p->pos.x - 0.5 * cos(rot.y), p->pos.y,
-			p->pos.z - 0.5 * sin(rot.y)};
-	if (p->keys[K_RIGHT])
-		p->pos = (t_vec3){p->pos.x + 0.5 * cos(rot.y), p->pos.y,
-			p->pos.z + 0.5 * sin(rot.y)};
+	rot = (t_vec3){env->rot.x * M_PI / 180, env->rot.y * M_PI / 180,
+		env->rot.z * M_PI / 180};
+	if (env->keys[K_UP])
+		env->pos = (t_vec3){env->pos.x - 0.5 * sin(rot.y), env->pos.y,
+			env->pos.z + 0.5 * cos(rot.y)};
+	if (env->keys[K_DOWN])
+		env->pos = (t_vec3){env->pos.x + 0.5 * sin(rot.y), env->pos.y,
+			env->pos.z - 0.5 * cos(rot.y)};
+	if (env->keys[K_LEFT])
+		env->pos = (t_vec3){env->pos.x - 0.5 * cos(rot.y), env->pos.y,
+			env->pos.z - 0.5 * sin(rot.y)};
+	if (env->keys[K_RIGHT])
+		env->pos = (t_vec3){env->pos.x + 0.5 * cos(rot.y), env->pos.y,
+			env->pos.z + 0.5 * sin(rot.y)};
 }
 
 int				key_press_hook(int key_code, void *parm)
 {
-	t_ptr	*p;
+	t_ptr	*env;
 
-	p = (t_ptr*)parm;
-	p->keys[key_code] = 1;
+	env = (t_ptr*)parm;
+	env->keys[key_code] = 1;
 	if (key_code == K_ESC)
 		exit(0);
 	//ft_printf("Key pressed: %d\n", key_code);
@@ -47,9 +47,9 @@ int				key_press_hook(int key_code, void *parm)
 
 int				key_release_hook(int key_code, void *parm)
 {
-	t_ptr	*p;
+	t_ptr	*env;
 
-	p = (t_ptr*)parm;
-	p->keys[key_code] = 0;
+	env = (t_ptr*)parm;
+	env->keys[key_code] = 0;
 	return (0);
 }

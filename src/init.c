@@ -6,11 +6,11 @@
 /*   By: njaber <neyl.jaber@gmail.com>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/20 13:17:27 by njaber            #+#    #+#             */
-/*   Updated: 2018/08/18 18:57:05 by cdittric         ###   ########.fr       */
+/*   Updated: 2018/08/18 19:07:00 by cdittric         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "wolf.h"
+#include "wolf3d.h"
 
 void			init_environment(t_ptr *env)
 {
