@@ -6,7 +6,7 @@
 /*   By: njaber <neyl.jaber@gmail.com>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/18 17:01:19 by njaber            #+#    #+#             */
-/*   Updated: 2018/08/18 14:11:56 by njaber           ###   ########.fr       */
+/*   Updated: 2018/08/18 18:57:07 by cdittric         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,20 +69,23 @@ static void		read_map(t_ptr *p, int fd)
 	}
 }
 
+void			parse_arguments(t_env *env)
+{
+
+
 int				main(int argc, char **argv)
 {
-	t_ptr	p;
+	t_env	env;
 	int		fd;
 
 	if (argc != 2)
 		ft_error("You need to give a single map file as argument\n");
-	ft_bzero(&p, sizeof(p));
 	if ((fd = open(argv[1], O_RDONLY)) < 0)
 		ft_error("Could not read file\n");
-	read_map(&p, fd);
+	read_map(&env, fd);
 	close(fd);
-	if ((p.mlx = mlx_init()) == 0)
+	if ((env.mlx = mlx_init()) == 0)
 		ft_error("[Error] Failed to initialize mlx\n");
-	init_struct(&p);
+	init_environment(&env);
 	launch_window(&p);
 }
