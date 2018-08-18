@@ -6,11 +6,11 @@
 /*   By: njaber <neyl.jaber@gmail.com>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/20 14:52:32 by njaber            #+#    #+#             */
-/*   Updated: 2018/08/18 11:51:27 by njaber           ###   ########.fr       */
+/*   Updated: 2018/08/18 20:30:30 by njaber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "wolf.h"
+#include "wolf3d.h"
 #include "mlx.h"
 
 static int		close_hook(void *parm)

@@ -6,22 +6,21 @@
 /*   By: njaber <neyl.jaber@gmail.com>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/26 00:14:34 by njaber            #+#    #+#             */
-/*   Updated: 2018/06/02 01:07:48 by njaber           ###   ########.fr       */
+/*   Updated: 2018/08/18 19:47:45 by njaber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libgxns.h"
 #include "mlx.h"
 
-void	paint_window(t_win *win, t_kernel *opencl_kernel, int clear)
+void	paint_window(t_win *win, int clear)
 {
 	uint64_t	time;
 
-	(void)opencl_kernel;
 	time = clock_gettime_nsec_np(CLOCK_UPTIME_RAW);
 	win->frame++;
 	if (win->frame % 5 == 0)
-		win->fps = (float)30000000000 / (time - win->frames[win->frame  % 30]);
+		win->fps = (t_scal)30000000000 / (time - win->frames[win->frame  % 30]);
 	win->frames[win->frame % 30] = time;
 	if (clear)
 		mlx_clear_window(win->mlx, win->win);

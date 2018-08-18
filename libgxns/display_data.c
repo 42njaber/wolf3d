@@ -6,14 +6,14 @@
 /*   By: njaber <neyl.jaber@gmail.com>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/10 12:10:10 by njaber            #+#    #+#             */
-/*   Updated: 2018/05/30 03:29:26 by njaber           ###   ########.fr       */
+/*   Updated: 2018/08/18 16:33:04 by njaber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libgxns.h"
 #include "mlx.h"
 
-void	display_data_float(t_win *win, char *name, float data, int y)
+void	display_data_scal(t_win *win, char *name, t_scal data, int y)
 {
 	char	*tmp;
 

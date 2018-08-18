@@ -6,11 +6,11 @@
 /*   By: njaber <neyl.jaber@gmail.com>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/16 05:31:19 by njaber            #+#    #+#             */
-/*   Updated: 2018/08/18 13:00:32 by njaber           ###   ########.fr       */
+/*   Updated: 2018/08/18 20:22:12 by njaber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "wolf.h"
+#include "wolf3d.h"
 
 static unsigned int		cast(t_ptr *p, t_vec3 dir)
 {

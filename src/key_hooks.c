@@ -6,11 +6,11 @@
 /*   By: njaber <neyl.jaber@gmail.com>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/20 14:52:32 by njaber            #+#    #+#             */
-/*   Updated: 2018/08/18 12:53:56 by njaber           ###   ########.fr       */
+/*   Updated: 2018/08/18 20:31:03 by njaber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "wolf.h"
+#include "wolf3d.h"
 #include <math.h>
 
 void			move(t_ptr *p)
@@ -19,16 +19,16 @@ void			move(t_ptr *p)
 
 	rot = (t_vec3){p->rot.x * M_PI / 180, p->rot.y * M_PI / 180,
 		p->rot.z * M_PI / 180};
-	if (p->keys[K_UP])
+	if (p->keys[KEY_UP])
 		p->pos = (t_vec3){p->pos.x - 0.5 * sin(rot.y), p->pos.y,
 			p->pos.z + 0.5 * cos(rot.y)};
-	if (p->keys[K_DOWN])
+	if (p->keys[KEY_DOWN])
 		p->pos = (t_vec3){p->pos.x + 0.5 * sin(rot.y), p->pos.y,
 			p->pos.z - 0.5 * cos(rot.y)};
-	if (p->keys[K_LEFT])
+	if (p->keys[KEY_LEFT])
 		p->pos = (t_vec3){p->pos.x - 0.5 * cos(rot.y), p->pos.y,
 			p->pos.z - 0.5 * sin(rot.y)};
-	if (p->keys[K_RIGHT])
+	if (p->keys[KEY_RIGHT])
 		p->pos = (t_vec3){p->pos.x + 0.5 * cos(rot.y), p->pos.y,
 			p->pos.z + 0.5 * sin(rot.y)};
 }
@@ -39,7 +39,7 @@ int				key_press_hook(int key_code, void *parm)
 
 	p = (t_ptr*)parm;
 	p->keys[key_code] = 1;
-	if (key_code == K_ESC)
+	if (key_code == KEY_ESC)
 		exit(0);
 	//ft_printf("Key pressed: %d\n", key_code);
 	return (0);

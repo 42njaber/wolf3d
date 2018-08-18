@@ -6,12 +6,12 @@
 /*   By: njaber <neyl.jaber@gmail.com>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/18 17:01:19 by njaber            #+#    #+#             */
-/*   Updated: 2018/08/18 19:03:39 by cdittric         ###   ########.fr       */
+/*   Updated: 2018/08/18 20:31:35 by njaber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <fcntl.h>
-#include "wolf.h"
+#include "wolf3d.h"
 #include "mlx.h"
 #include "gnl.h"
 

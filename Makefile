@@ -31,11 +31,11 @@ force:
 libgxns/libgxns.a: force
 	make -C libgxns/
 
-$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c inc/wolf.h
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c inc/wolf3d.h
 	@mkdir $(OBJ_DIR) &> /dev/null || true
 	$(CC) $(FLAGS) -o $@ -c $< $(MACROS) 
 
-$(NAME): $(LIB) $(OBJ) Makefile inc/wolf.h
+$(NAME): $(LIB) $(OBJ) Makefile inc/wolf3d.h
 	$(CC) $(CFLAGS) -o $@ $(OBJ)
 
 soft_clean:

@@ -22,17 +22,17 @@ t_vec3	vec_add(t_vec3 v1, t_vec3 v2)
 	return ((t_vec3){v1.x + v2.x, v1.y + v2.y, v1.z + v2.z});
 }
 
-t_vec3	vec_mult(t_vec3 v1, float d)
+t_vec3	vec_mult(t_vec3 v1, t_scal d)
 {
 	return ((t_vec3){v1.x * d, v1.y * d, v1.z * d});
 }
 
-float	length(t_vec3 v1)
+t_scal	length(t_vec3 v1)
 {
 	return (sqrt(sqr(v1.x) + sqr(v1.y) + sqr(v1.z)));
 }
 
-float	scalar(t_vec3 v1, t_vec3 v2)
+t_scal	scalar(t_vec3 v1, t_vec3 v2)
 {
 	return (v1.x * v2.x + v1.y * v2.y + v1.z * v2.z);
 }

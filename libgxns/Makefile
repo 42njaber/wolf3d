@@ -10,17 +10,6 @@ SRC = draw_fig.c \
 	  util.c \
 	  gnl/get_next_line.c
 
-ALT_SRC = init_opencl.c
-
-ifndef OPENCL
-OPENCL = TRUE
-endif
-
-ifeq ($(OPENCL), TRUE)
-SRC += init_opencl.c
-MACROS += -D OPENCL
-endif
-
 NAME = libgxns.a
 MLX = ../minilibx_macos/libmlx.a
 LFT = ../libft/libft.a

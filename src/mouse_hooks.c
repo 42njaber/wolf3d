@@ -6,11 +6,11 @@
 /*   By: njaber <neyl.jaber@gmail.com>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/26 01:32:56 by njaber            #+#    #+#             */
-/*   Updated: 2018/08/18 12:07:54 by njaber           ###   ########.fr       */
+/*   Updated: 2018/08/18 20:31:52 by njaber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "wolf.h"
+#include "wolf3d.h"
 
 int		button_press_hook(int button, int x, int y, void *parms)
 {

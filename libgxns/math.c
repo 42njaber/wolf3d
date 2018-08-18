@@ -12,7 +12,7 @@
 
 #include "libgxns.h"
 
-float			sqr(float n)
+t_scal			sqr(t_scal n)
 {
 	return (n * n);
 }

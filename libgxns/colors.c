@@ -12,7 +12,7 @@
 
 #include "libgxns.h"
 
-unsigned int			color_gradiant(unsigned int *colors, float gradiant)
+unsigned int			color_gradiant(unsigned int *colors, t_scal gradiant)
 {
 	unsigned int		ret;
 
