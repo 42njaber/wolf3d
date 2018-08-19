@@ -14,6 +14,12 @@ FILES = main.c \
 		hooks.c
 
 CFLAGS = -Llibft -lft -Lft_printf -lftprintf -Lmlx -lmlx -framework OpenGL -framework AppKit
+FLAGS = -Wall -Wextra -Werror -Iinc/ -Ift_printf/ -Imlx/ -Ilibft/
+
+ifeq ($(DEGUB), TRUE)
+	CFLAGS+= -fsanitize=address -g3 -std=c89 -pedantic
+	FLAGS+= -fsanitize=address -g3 -std=c89 -pedantic
+endif
 
 SRC_DIR = src
 SRC = $(FILES:%=$(SRC_DIR)/%)
@@ -24,7 +30,6 @@ OBJ_DIR = obj
 OBJ = $(FILES:%.c=$(OBJ_DIR)/%.o)
 
 LIBS = libft/libft.a ft_printf/libftprintf.a mlx/libmlx.a
-FLAGS = -Wall -Wextra -Werror -Iinc/ -Ift_printf/ -Imlx/ -Ilibft/
 CC = gcc
 RM = @rm -fv
 .PHONY: all, test, clean, fclean, re, force

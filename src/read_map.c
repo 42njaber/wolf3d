@@ -6,7 +6,7 @@
 /*   By: njaber <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/19 05:37:55 by njaber            #+#    #+#             */
-/*   Updated: 2018/08/19 07:17:17 by njaber           ###   ########.fr       */
+/*   Updated: 2018/08/19 08:34:44 by njaber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,13 +35,13 @@ static void		read_map_line(t_map *map, char *line, int y)
 	}
 }
 
-static int		read_map(t_map *map)
+static int		read_map(t_map *map, int fd)
 {
 	int		i;
 	int		ret;
 	char	*line;
 
-	if ((ret = get_next_line(map->fd, &line)) != 1
+	if ((ret = get_next_line(fd, &line)) != 1
 			|| ft_strchr(line, ',') == NULL)
 		ft_error("Error while reading file (line: %d)\n", line);
 	map->dim.v[0] = ft_atoi(line);
@@ -52,7 +52,7 @@ static int		read_map(t_map *map)
 	i = -1;
 	while (++i < map->dim.v[1])
 	{
-		if (get_next_line(map->fd, &line) !=  1)
+		if (get_next_line(fd, &line) !=  1)
 			ft_error("Error while reading file: not enough lines\n");
 		read_map_line(map, line, i);
 		free(line);
@@ -84,22 +84,23 @@ t_map			*delete_map(t_map *map)
 void			read_map_list(t_env *env)
 {
 	t_map	*map;
+	int		fd;
 
 	map = env->map_list;
 	while (map != NULL)
 	{
-		map->fd = open(map->path, O_RDONLY);
-		if (map->fd < 0)
+		fd = open(map->path, O_RDONLY);
+		if (fd < 0)
 		{
 			ft_error("Could not read file %s\n", map->path);
 			map = delete_map(map);
 			continue ;
 		}
-		else if (read_map(map) == EXIT_FAILURE)
+		else if (read_map(map, fd) == EXIT_FAILURE)
 			map = delete_map(map);
 		else
 			map = map->next;
-		close(map->fd);
+		close(fd);
 	}
 	if (env->map_list == NULL)
 	{
@@ -110,16 +111,16 @@ void			read_map_list(t_env *env)
 
 t_map			*add_map(t_env *env, char *path)
 {
-	t_map	*lst;
+	t_map	**lst;
 	t_map	*map;
 
-	lst = env->map_list;
-	while (lst->next != NULL)
-		lst = lst->next;
 	if ((map = (t_map*)ft_memalloc(sizeof(t_map))) == NULL)
 		return (NULL);
-	lst->next = map;
-	map->self = &lst->next;
+	lst = &env->map_list;
+	while (*lst != NULL)
+		lst = &(*lst)->next;
+	*lst = map;
+	map->self = lst;
 	map->path = path;
 	return (map);
 }
