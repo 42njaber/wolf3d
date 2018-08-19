@@ -6,7 +6,7 @@
 /*   By: njaber <neyl.jaber@gmail.com>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/19 10:10:08 by njaber            #+#    #+#             */
-/*   Updated: 2018/08/19 06:52:07 by njaber           ###   ########.fr       */
+/*   Updated: 2018/08/19 09:33:09 by cdittric         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,5 +46,4 @@ void	init_new_image(void *mlx, t_img *img, t_ivec size)
 	img->size = size;
 	img->buf = (unsigned char*)mlx_get_data_addr(img->link, &(img->px_size),
 			&(img->line), &(img->endian));
-	img->line_draw_mode = 1;
 }

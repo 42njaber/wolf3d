@@ -22,7 +22,7 @@
 # include "gnl.h"
 
 # include "qwerty.h"
-// NOTE: Window width and height are set in parse arguments.
+// NOTE: Window width and height are set in parse_arguments.
 
 # define DEFAULT_WINDOW_WIDTH 1200
 # define DEFAULT_WINDOW_HEIGHT 800
@@ -51,8 +51,7 @@ typedef struct			s_ivec {
 
 typedef struct s_map	t_map;
 
-struct					s_map
-{
+struct					s_map {
 	char	*path;
 	int		**grid;
 	t_ivec	dim;
@@ -67,10 +66,12 @@ typedef struct	s_img {
 	int				px_size;
 	int				line;
 	int				endian;
-	int				line_draw_mode;
 }				t_img;
 
-typedef struct	s_win {
+typedef struct	s_env	t_env;
+
+typedef struct			s_win {
+	t_env			*env;
 	void			*mlx;
 	void			*win;
 	t_img			img;
@@ -80,10 +81,9 @@ typedef struct	s_win {
 	int				frame;
 	t_scal			fps;
 	unsigned long	frames[30];
-}				t_win;
+}						t_win;
 
-typedef struct			s_env
-{
+struct					s_env {
 	void		*mlx;
 	t_win		win;
 	char		keys[512];
@@ -96,10 +96,11 @@ typedef struct			s_env
 	t_vec2		origin_rot;
 	t_mat2		cam_mat;
 	t_map		*map_list;
-}				t_env;
+};
 
 void			init_environment(t_env *env);
 void			end_environment(t_env *env, int status);
+void			end_environment_callback(void *env, int status);
 void			set_hooks(t_env *env);
 
 int				loop_hook(t_env *env);
@@ -130,7 +131,7 @@ t_vec3			vec_mult(t_vec3 v1, t_scal d);
 t_scal			length(t_vec3 v1);
 t_scal			scalar(t_vec3 v1, t_vec3 v2);
 
-int				init_new_win(void *mlx, t_win *win, t_ivec size, char *title);
+int				init_new_win(t_env *env, t_win *win, t_ivec size, char *title);
 void			paint_window(t_win *win, int clear);
 
 void			display_data_scal(t_win *win, char *name, t_scal data, int y);

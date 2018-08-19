@@ -6,7 +6,7 @@
 /*   By: njaber <neyl.jaber@gmail.com>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/12/21 21:11:55 by njaber            #+#    #+#             */
-/*   Updated: 2018/05/30 03:04:43 by njaber           ###   ########.fr       */
+/*   Updated: 2018/08/19 10:43:03 by cdittric         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,5 +111,8 @@ void			pf_int(t_mods mods, t_byte *parm, t_buf *buf, va_list arg);
 void			pf_chr(t_mods mods, t_byte *parm, t_buf *buf, va_list arg);
 void			pf_dbl(t_mods mods, t_byte *parm, t_buf *buf, va_list arg);
 void			pf_len(t_mods mods, t_byte *parm, t_buf *buf, va_list arg);
+
+void			ft_set_error_callback(void (*func)(void *, int), void *param);
+void			ft_error_callback(void);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: njaber <neyl.jaber@gmail.com>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/18 17:01:19 by njaber            #+#    #+#             */
-/*   Updated: 2018/08/19 08:12:35 by njaber           ###   ########.fr       */
+/*   Updated: 2018/08/19 11:36:31 by cdittric         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,9 +18,9 @@ static void		launch_window(t_env *env)
 
 	win_size.v[0] = DEFAULT_WINDOW_WIDTH;
 	win_size.v[1] = DEFAULT_WINDOW_HEIGHT;
-	if ((env->mlx = mlx_init()) == 0)
+	if ((env->mlx = mlx_init()) == NULL)
 		ft_error("[Error] Failed to initialize mlx\n");
-	if ((init_new_win(env->mlx, &env->win, win_size, "Wolf3D")) == 0)
+	if ((init_new_win(env, &env->win, win_size, "Wolf3D")) == EXIT_FAILURE)
 		ft_error("[Error] Failed to initialize window\n");
 	set_hooks(env);
 }
@@ -35,32 +35,27 @@ void static		parse_arguments(t_env *env, int argc, char **argv)
 	while (++i < argc)
 	{
 		if (add_map(env, argv[i]) == NULL)
-		{
-			ft_error("Failed to allocate map structure.\n");
-			end_environment(env, 0);
-		}
+		ft_error("Failed to allocate map structure.\n");
 	}
 }
 
 void			end_environment(t_env *env, int status)
 {
-	t_map	*lst;
-	t_map	*lst2;
-
-	lst = env->map_list;
-	while (lst != NULL)
-	{
-		lst2 = lst->next;
-		delete_map(lst);
-		lst = lst2;
-	}
+	while (env->map_list != NULL)
+		(void)delete_map(env->map_list);
 	exit(status);
+}
+
+void			end_environment_callback(void *env, int status)
+{
+	end_environment(env, status);
 }
 
 int				main(int argc, char **argv)
 {
 	t_env	env;
 
+	ft_set_error_callback(end_environment_callback, &env);
 	init_environment(&env);
 	parse_arguments(&env, argc, argv);
 	read_map_list(&env);

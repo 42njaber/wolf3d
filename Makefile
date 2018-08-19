@@ -14,7 +14,7 @@ FILES = main.c \
 		hooks.c
 
 CFLAGS = -Llibft -lft -Lft_printf -lftprintf -Lmlx -lmlx -framework OpenGL -framework AppKit
-FLAGS = -Wall -Wextra -Werror -Iinc/
+FLAGS = -Wall -Wextra -Werror -Iinc/ -Ift_printf/ -Imlx/ -Ilibft/
 
 ifeq ($(DEGUB), TRUE)
 	CFLAGS+= -fsanitize=address -g3 -std=c89 -pedantic
