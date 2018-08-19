@@ -7,7 +7,8 @@ SRC = ft_mapper.c \
 	  ft_pf_str.c \
 	  pf_buf.c \
 	  pf_format.c \
-	  pf_utility.c
+	  pf_utility.c \
+	  ft_error_callback.c
 
 NAME = libftprintf.a
 FLAGS = -Wall -Wextra -Werror
@@ -25,7 +26,7 @@ force:
 	@true
 
 %.o: %.c ft_printf.h
-	$(CC) $(FLAGS) -c $< -I ../inc
+	$(CC) $(FLAGS) -c $< -I ../libft/
 
 $(NAME): $(LIB) $(OBJ) ft_printf.h Makefile
 	rm -fv $(NAME)

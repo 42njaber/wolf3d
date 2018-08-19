@@ -24,7 +24,7 @@ OBJ_DIR = obj
 OBJ = $(FILES:%.c=$(OBJ_DIR)/%.o)
 
 LIBS = libft/libft.a ft_printf/libftprintf.a mlx/libmlx.a
-FLAGS = -Wall -Wextra -Werror -Iinc/
+FLAGS = -Wall -Wextra -Werror -Iinc/ -Ift_printf/ -Imlx/ -Ilibft/
 CC = gcc
 RM = @rm -fv
 .PHONY: all, test, clean, fclean, re, force
@@ -60,7 +60,7 @@ clean:
 	@echo "Cleaning objects:"
 	$(MAKE) -C libft/ fclean
 	$(MAKE) -C ft_printf/ fclean
-	$(MAKE) -C mlx/ fclean
+	$(MAKE) -C mlx/ clean
 	$(RM) $(OBJ)
 
 fclean: clean
