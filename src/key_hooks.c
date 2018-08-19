@@ -6,7 +6,7 @@
 /*   By: njaber <neyl.jaber@gmail.com>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/20 14:52:32 by njaber            #+#    #+#             */
-/*   Updated: 2018/08/19 06:36:55 by njaber           ###   ########.fr       */
+/*   Updated: 2018/08/19 08:56:43 by njaber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,10 +15,9 @@
 
 void			move(t_env *env)
 {
-	t_vec3		rot;
+	t_vec2		rot;
 
-	rot = vec3(env->rot.v[0] * M_PI / 180, env->rot.v[1] * M_PI / 180,
-		env->rot.v[2] * M_PI / 180);
+	rot = vec2(env->rot.v[0] * M_PI / 180, env->rot.v[1] * M_PI / 180);
 	if (env->keys[KEY_UP])
 		env->pos = vec3(env->pos.v[0] - 0.5 * sin(rot.v[1]), env->pos.v[1],
 			env->pos.v[2] + 0.5 * cos(rot.v[1]));

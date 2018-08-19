@@ -6,13 +6,13 @@
 /*   By: njaber <njaber@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/19 06:20:57 by njaber            #+#    #+#             */
-/*   Updated: 2018/08/19 06:30:46 by njaber           ###   ########.fr       */
+/*   Updated: 2018/08/19 09:13:25 by njaber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "wolf3d.h"
 
-t_vec3		vec3(float x, float y, float z)
+t_vec3		vec3(t_scal x, t_scal y, t_scal z)
 {
 	t_vec3	ret;
 
@@ -22,7 +22,7 @@ t_vec3		vec3(float x, float y, float z)
 	return (ret);
 }
 
-t_vec2		vec2(float x, float y)
+t_vec2		vec2(t_scal x, t_scal y)
 {
 	t_vec2	ret;
 

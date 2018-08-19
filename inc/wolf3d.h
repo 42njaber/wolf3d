@@ -53,7 +53,6 @@ typedef struct s_map	t_map;
 
 struct					s_map
 {
-	int		fd;
 	char	*path;
 	int		**grid;
 	t_ivec	dim;
@@ -79,7 +78,7 @@ typedef struct	s_win {
 	int				h;
 	t_ivec			size; //TODO: Delete size. Replaced by w and h.
 	int				frame;
-	float			fps;
+	t_scal			fps;
 	unsigned long	frames[30];
 }				t_win;
 
@@ -93,8 +92,9 @@ typedef struct			s_env
 	t_ivec		tmp_mouse_pos;
 	int			timer;
 	t_vec3		pos;
-	t_vec3		rot;
-	t_vec3		origin_rot;
+	t_vec2		rot;
+	t_vec2		origin_rot;
+	t_mat2		cam_mat;
 	t_map		*map_list;
 }				t_env;
 
@@ -115,13 +115,14 @@ void			display(t_env *env);
 
 t_scal			sqr(t_scal n);
 
-t_vec3			vec3(float x, float y, float z);
-t_vec2			vec2(float x, float y);
+t_vec3			vec3(t_scal x, t_scal y, t_scal z);
+t_vec2			vec2(t_scal x, t_scal y);
 t_ivec			ivec(int x, int y);
 
-t_vec2			c_mult(t_vec2 z1, t_vec2 z2);
-t_vec2			c_add(t_vec2 z1, t_vec2 z2);
-t_vec2			c_pow(t_vec2 z1, int pow);
+t_mat2			m2identity(void);
+t_mat2			m2rotation(t_scal angle);
+t_mat2			m2dot(t_mat2 m1, t_mat2 m2);
+t_vec2			m2dotv2(t_mat2 m, t_vec2 v);
 
 t_vec3			vec_sub(t_vec3 v1, t_vec3 v2);
 t_vec3			vec_add(t_vec3 v1, t_vec3 v2);

@@ -6,7 +6,7 @@
 /*   By: njaber <neyl.jaber@gmail.com>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/18 17:01:19 by njaber            #+#    #+#             */
-/*   Updated: 2018/08/19 07:04:07 by njaber           ###   ########.fr       */
+/*   Updated: 2018/08/19 08:12:35 by njaber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,12 +62,8 @@ int				main(int argc, char **argv)
 	t_env	env;
 
 	init_environment(&env);
-	ft_printf("Test3\n");
 	parse_arguments(&env, argc, argv);
-	ft_printf("Test5\n");
 	read_map_list(&env);
-	ft_printf("Test7\n");
 	launch_window(&env);
-	ft_printf("Test9\n");
 	mlx_loop(env.mlx);
 }

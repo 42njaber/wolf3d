@@ -6,7 +6,7 @@
 /*   By: njaber <neyl.jaber@gmail.com>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/20 13:17:27 by njaber            #+#    #+#             */
-/*   Updated: 2018/08/19 06:10:57 by njaber           ###   ########.fr       */
+/*   Updated: 2018/08/19 08:53:08 by njaber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,10 +15,6 @@
 void			init_environment(t_env *env)
 {
 	ft_bzero(env, sizeof(*env));
-	env->pos.v[0] = 0.0;
-	env->pos.v[1] = 3.0;
-	env->pos.v[2] = 0.0;
-	env->rot.v[0] = 0.0;
-	env->rot.v[1] = 0.0;
-	env->rot.v[2] = 0.0;
+	env->pos = vec3(0., 3., 0);
+	env->rot = vec2(0., 0.);
 }
