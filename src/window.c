@@ -6,11 +6,11 @@
 /*   By: njaber <neyl.jaber@gmail.com>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/26 00:14:34 by njaber            #+#    #+#             */
-/*   Updated: 2018/08/18 19:47:45 by njaber           ###   ########.fr       */
+/*   Updated: 2018/08/19 06:51:48 by njaber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libgxns.h"
+#include "wolf3d.h"
 #include "mlx.h"
 
 void	paint_window(t_win *win, int clear)
@@ -33,7 +33,7 @@ int		init_new_win(void *mlx, t_win *win, t_ivec size, char *title)
 		win->mlx = mlx;
 	else if ((win->mlx = mlx_init()) == NULL)
 		return (0);
-	if ((win->win = mlx_new_window(win->mlx, size.x, size.y, title)) == NULL)
+	if ((win->win = mlx_new_window(win->mlx, size.v[0], size.v[1], title)) == NULL)
 		return (0);
 	if (win->img.link == NULL)
 		init_new_image(win->mlx, &win->img, size);

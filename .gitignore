@@ -1,5 +1,7 @@
 .*.sw*
 *.o
 *.a
+*.orig
+*.tmp
 cscope*
 wolf3d

@@ -6,7 +6,7 @@
 /*   By: cdittric <cdittric@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/18 17:23:33 by cdittric          #+#    #+#             */
-/*   Updated: 2018/08/18 18:39:37 by cdittric         ###   ########.fr       */
+/*   Updated: 2018/08/19 07:23:35 by njaber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,10 +32,13 @@ t_mat2	m2identity(void)
 
 t_mat2	m2rotation(t_scal angle)
 {
+	t_mat2	ret;
+
 	ret.m[0] = cos(angle);
 	ret.m[1] = sin(angle);
 	ret.m[2] = -sin(angle);
 	ret.m[3] = cos(angle);
+	return (ret);
 }
 
 t_mat2	m2dot(t_mat2 m1, t_mat2 m2)

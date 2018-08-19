@@ -6,87 +6,68 @@
 /*   By: njaber <neyl.jaber@gmail.com>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/18 17:01:19 by njaber            #+#    #+#             */
-/*   Updated: 2018/08/18 20:31:35 by njaber           ###   ########.fr       */
+/*   Updated: 2018/08/19 07:04:07 by njaber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <fcntl.h>
 #include "wolf3d.h"
-#include "mlx.h"
-#include "gnl.h"
 
-static void		launch_window(t_env *p)
+static void		launch_window(t_env *env)
 {
-	if ((init_new_win(p->mlx, p->win, (t_ivec){1200, 800}, "Wolf3D")) == 0)
-		ft_error("[Erreur] Failed to initialize window\n");
-	set_hooks(p);
-	mlx_loop(p->mlx);
+	t_ivec		win_size;
+
+	win_size.v[0] = DEFAULT_WINDOW_WIDTH;
+	win_size.v[1] = DEFAULT_WINDOW_HEIGHT;
+	if ((env->mlx = mlx_init()) == 0)
+		ft_error("[Error] Failed to initialize mlx\n");
+	if ((init_new_win(env->mlx, &env->win, win_size, "Wolf3D")) == 0)
+		ft_error("[Error] Failed to initialize window\n");
+	set_hooks(env);
 }
 
-static void		read_map_line(t_env *p, char *line, int y)
+void static		parse_arguments(t_env *env, int argc, char **argv)
 {
 	int		i;
-	char	*tmp;
 
-	if ((p->map[y] = (int*)ft_memalloc(sizeof(int) * p->mdim.x)) == NULL)
-		ft_error("Malloc error\n");
-	i = -1;
-	tmp = line;
-	while (++i < p->mdim.x)
+	env->win.w = DEFAULT_WINDOW_WIDTH;
+	env->win.h = DEFAULT_WINDOW_HEIGHT;
+	i = 0;
+	while (++i < argc)
 	{
-		p->map[y][i] = ft_atoi(tmp);
-		tmp = ft_strchr(tmp, ',');
-		if (i < p->mdim.x - 1 && tmp == NULL)
-			ft_error("Error while reading file: "
-					"not enough numbers on line %i\n", y);
-		if (i == p->mdim.x - 1 && tmp != NULL)
-			ft_error("Error while reading file: "
-					"too many numbers on line %i\n", y);
-		tmp++;
+		if (add_map(env, argv[i]) == NULL)
+		{
+			ft_error("Failed to allocate map structure.\n");
+			end_environment(env, 0);
+		}
 	}
 }
 
-static void		read_map(t_env *p, int fd)
+void			end_environment(t_env *env, int status)
 {
-	int		i;
-	int		ret;
-	char	*line;
+	t_map	*lst;
+	t_map	*lst2;
 
-	if ((ret = get_next_line(fd, &line)) != 1 || ft_strchr(line, ',') == NULL)
-		ft_error("Error while reading file (line: %d)\n", line);
-	p->mdim.x = ft_atoi(line);
-	p->mdim.y = ft_atoi(ft_strchr(line, ',') + 1);
-	free(line);
-	if ((p->map = (int**)ft_memalloc(sizeof(int*) * p->mdim.y)) == NULL)
-		ft_error("Malloc error\n");
-	i = -1;
-	while (++i < p->mdim.y)
+	lst = env->map_list;
+	while (lst != NULL)
 	{
-		if (get_next_line(fd, &line) !=  1)
-			ft_error("Error while reading file: not enough lines\n");
-		read_map_line(p, line, i);
-		free(line);
+		lst2 = lst->next;
+		delete_map(lst);
+		lst = lst2;
 	}
-}
-
-void			parse_arguments(t_env *env, int argc, char *argv)
-{
-	if (argc != 2)
-		ft_error("You need to give a single map file as argument\n");
-	if ((fd = open(argv[1], O_RDONLY)) < 0)
-		ft_error("Could not read file\n");
+	exit(status);
 }
 
 int				main(int argc, char **argv)
 {
 	t_env	env;
-	int		fd;
 
 	init_environment(&env);
-	parse_argument(&env, argc, argv);
-	read_map(&env, fd);
-	close(fd);
-	if ((env.mlx = mlx_init()) == 0)
-		ft_error("[Error] Failed to initialize mlx\n");
+	ft_printf("Test3\n");
+	parse_arguments(&env, argc, argv);
+	ft_printf("Test5\n");
+	read_map_list(&env);
+	ft_printf("Test7\n");
 	launch_window(&env);
+	ft_printf("Test9\n");
+	mlx_loop(env.mlx);
 }
