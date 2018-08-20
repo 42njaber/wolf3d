@@ -11,6 +11,9 @@ FILES = main.c \
 		images.c \
 		get_next_line.c \
 		matrix.c \
+		math.c \
+		hitbox.c \
+		png_decoder.c \
 		hooks.c
 
 CFLAGS = -Llibft -lft -Lft_printf -lftprintf -Lmlx -lmlx -framework OpenGL -framework AppKit

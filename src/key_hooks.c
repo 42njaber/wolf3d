@@ -6,30 +6,33 @@
 /*   By: njaber <neyl.jaber@gmail.com>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/20 14:52:32 by njaber            #+#    #+#             */
-/*   Updated: 2018/08/19 15:06:24 by njaber           ###   ########.fr       */
+/*   Updated: 2018/08/20 10:22:00 by njaber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "wolf3d.h"
 #include <math.h>
 
+#define SPEED 0.2
+
 void			move(t_env *env)
 {
-	t_vec2		rot;
+	t_scal		rot;
 
-	rot = vec2(env->rot.v[0] * M_PI / 180, env->rot.v[1] * M_PI / 180);
+	rot = env->rot * M_PI / 180;
 	if (env->keys[KEY_UP])
-		env->pos = vec3(env->pos.v[0] - 0.1 * sin(rot.v[1]), env->pos.v[1],
-			env->pos.v[2] + 0.1 * cos(rot.v[1]));
+		env->pos = vec3(env->pos.v[0] - SPEED * sin(rot), env->pos.v[1],
+			env->pos.v[2] + SPEED * cos(rot));
 	if (env->keys[KEY_DOWN])
-		env->pos = vec3(env->pos.v[0] + 0.1 * sin(rot.v[1]), env->pos.v[1],
-			env->pos.v[2] - 0.1 * cos(rot.v[1]));
+		env->pos = vec3(env->pos.v[0] + SPEED * sin(rot), env->pos.v[1],
+			env->pos.v[2] - SPEED * cos(rot));
 	if (env->keys[KEY_LEFT])
-		env->pos = vec3(env->pos.v[0] - 0.1 * cos(rot.v[1]), env->pos.v[1],
-			env->pos.v[2] - 0.1 * sin(rot.v[1]));
+		env->pos = vec3(env->pos.v[0] - SPEED * cos(rot), env->pos.v[1],
+			env->pos.v[2] - SPEED * sin(rot));
 	if (env->keys[KEY_RIGHT])
-		env->pos = vec3(env->pos.v[0] + 0.1 * cos(rot.v[1]), env->pos.v[1],
-			env->pos.v[2] + 0.1 * sin(rot.v[1]));
+		env->pos = vec3(env->pos.v[0] + SPEED * cos(rot), env->pos.v[1],
+			env->pos.v[2] + SPEED * sin(rot));
+	clamp_pos(env);
 }
 
 int				key_press_hook(int key_code, t_env *env)

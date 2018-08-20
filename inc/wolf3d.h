@@ -27,6 +27,9 @@
 # define DEFAULT_WINDOW_WIDTH 1200
 # define DEFAULT_WINDOW_HEIGHT 800
 
+// Map tile size
+# define SIZE 10.
+
 typedef double			t_scal;
 
 typedef struct			s_vec2 {
@@ -92,10 +95,11 @@ struct					s_env {
 	t_ivec		tmp_mouse_pos;
 	int			timer;
 	t_vec3		pos;
-	t_vec2		rot;
-	t_vec2		origin_rot;
+	t_scal		rot;
+	t_scal		origin_rot;
 	t_mat2		cam_mat;
 	t_map		*map_list;
+	t_img		*text;
 };
 
 void			init_environment(t_env *env);
@@ -113,12 +117,13 @@ int				key_release_hook(int key_code, t_env *env);
 void			move(t_env *env);
 
 void			display(t_env *env);
-
-t_scal			sqr(t_scal n);
+int				hit_tile(t_map *map, t_vec2 point);
+void			clamp_pos(t_env *env);
 
 t_vec3			vec3(t_scal x, t_scal y, t_scal z);
 t_vec2			vec2(t_scal x, t_scal y);
 t_ivec			ivec(int x, int y);
+t_scal			sqr(t_scal n);
 
 t_mat2			m2identity(void);
 t_mat2			m2rotation(t_scal angle);
@@ -149,5 +154,7 @@ int				get_key_digit(int key_code);
 void			read_map_list(t_env *env);
 t_map			*delete_map(t_map *map);
 t_map			*add_map(t_env *env, char *path);
+
+t_img			*decode_png(void *mlx, char *path);
 
 #endif
