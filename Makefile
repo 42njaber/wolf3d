@@ -1,3 +1,5 @@
+DEBUG = TRUE
+
 FILES = main.c \
 		init.c \
 		display.c \

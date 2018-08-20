@@ -6,7 +6,7 @@
 /*   By: njaber <neyl.jaber@gmail.com>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/18 17:01:19 by njaber            #+#    #+#             */
-/*   Updated: 2018/08/20 11:51:30 by njaber           ###   ########.fr       */
+/*   Updated: 2018/08/20 13:08:40 by njaber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,10 @@ void			end_environment(t_env *env, int status)
 {
 	while (env->map_list != NULL)
 		(void)delete_map(env->map_list);
+	if (env->win.img.link != NULL)
+		mlx_destroy_image(env->mlx, env->win.img.link);
+	if (env->win.win != NULL)
+		mlx_destroy_window(env->mlx, env->win.win);
 	exit(status);
 }
 

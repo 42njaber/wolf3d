@@ -6,7 +6,7 @@
 /*   By: njaber <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/19 05:37:55 by njaber            #+#    #+#             */
-/*   Updated: 2018/08/19 08:34:44 by njaber           ###   ########.fr       */
+/*   Updated: 2018/08/19 23:44:58 by cdittric         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,10 +71,9 @@ t_map			*delete_map(t_map *map)
 	*map->self = map->next;
 	if (map->grid != NULL)
 	{
-		i = -1;
+		i = 0;
 		while (i < map->dim.v[1])
-			if (map->grid[i] != NULL)
-				free(map->grid[i]);
+			free(map->grid[i++]);
 		free(map->grid);
 	}
 	free(map);

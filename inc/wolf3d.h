@@ -52,6 +52,10 @@ typedef struct			s_ivec {
 	int		v[2];
 }						t_ivec;
 
+typedef struct			s_entity {
+	t_vec3		pos;
+}						t_entity;
+
 typedef struct s_map	t_map;
 
 struct					s_map {
