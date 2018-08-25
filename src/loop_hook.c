@@ -6,7 +6,7 @@
 /*   By: njaber <neyl.jaber@gmail.com>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/20 16:00:11 by njaber            #+#    #+#             */
-/*   Updated: 2018/08/20 12:49:15 by njaber           ###   ########.fr       */
+/*   Updated: 2018/08/20 15:12:34 by njaber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ int				loop_hook(t_env *env)
 	update(env);
 	display(env);
 	paint_window(&env->win, 1);
-	//mlx_put_image_to_window(env->mlx, env->win.win, env->text->link, 200, 200);
+	mlx_put_image_to_window(env->mlx, env->win.win, env->text->img->link, 200, 200);
 	print_data(env);
 	return (0);
 }

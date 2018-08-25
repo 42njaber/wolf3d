@@ -32,6 +32,10 @@
 
 typedef double			t_scal;
 
+typedef unsigned int	uint;
+typedef unsigned char	uchar;
+typedef unsigned short	ushort;
+
 typedef struct			s_vec2 {
 	t_scal	v[2];
 }						t_vec2;
@@ -66,14 +70,41 @@ struct					s_map {
 	t_map	*next;
 };
 
-typedef struct	s_img {
+typedef struct			s_img {
 	void			*link;
 	unsigned char	*buf;
 	t_ivec			size;
 	int				px_size;
 	int				line;
 	int				endian;
-}				t_img;
+}						t_img;
+
+typedef struct s_btree	t_btree;
+
+struct					s_btree {
+	t_btree		*parent;
+	t_btree		*b0;
+	t_btree		*b1;
+	short		val;
+};
+
+typedef struct			s_png {
+	t_ivec	dim;
+	t_img	*img;
+	uchar	*buf;
+	uchar	init;
+	uchar	bdepth;
+	uchar	ctype;
+	uchar	compression;
+	uchar	filter;
+	uchar	interlace;
+	t_ivec	aratio;
+	uchar	aunit;
+	uint	_block_len;
+	uchar	_block_type[4];
+	ushort	_def_len;
+	ushort	_def_nlen;
+}						t_png;
 
 typedef struct	s_env	t_env;
 
@@ -103,7 +134,7 @@ struct					s_env {
 	t_scal		origin_rot;
 	t_mat2		cam_mat;
 	t_map		*map_list;
-	t_img		*text;
+	t_png		*text;
 };
 
 void			init_environment(t_env *env);
@@ -159,6 +190,18 @@ void			read_map_list(t_env *env);
 t_map			*delete_map(t_map *map);
 t_map			*add_map(t_env *env, char *path);
 
-t_img			*decode_png(void *mlx, char *path);
+t_png			*decode_png(void *mlx, char *path);
+int				validate_crc(int fd, uchar *buf, t_png *png);
+int				checksum(uchar *buf);
+void			destroy_png(t_png **png);
+int				parse_ihdr(int fd, t_png *png);
+int				parse_phys(int fd, t_png *png);
+int				parse_idat(int fd, t_png *png);
+int				parse_iend(int fd, t_png *png);
+int				parse_unkown(int fd, t_png *png);
+
+uchar			get_next_bits(uchar *buf, uint *pos, uint len);
+int				decompress_block(t_png *png, uchar *buf, uchar header);
+int				parse_zlib(t_png *png, uchar *buf);
 
 #endif
