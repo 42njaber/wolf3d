@@ -6,7 +6,7 @@
 /*   By: njaber <neyl.jaber@gmail.com>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/18 17:01:19 by njaber            #+#    #+#             */
-/*   Updated: 2018/08/20 14:43:15 by njaber           ###   ########.fr       */
+/*   Updated: 2018/09/04 16:00:51 by njaber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ static void		launch_window(t_env *env)
 		ft_error("[Error] Failed to initialize mlx\n");
 	if ((init_new_win(env, &env->win, win_size, "Wolf3D")) == EXIT_FAILURE)
 		ft_error("[Error] Failed to initialize window\n");
-	if ((env->text = decode_png(env->mlx, "ressource/tmp.png")) == NULL)
+	if ((env->text = decode_png(env->mlx, "ressource/test.png")) == NULL)
 		ft_error("[Error] Failed to read tmp.png\n");
 	set_hooks(env);
 }

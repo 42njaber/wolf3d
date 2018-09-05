@@ -90,8 +90,8 @@ struct					s_btree {
 
 typedef struct			s_png {
 	t_ivec	dim;
-	t_img	*img;
-	uchar	*buf;
+	t_img	img;
+	uint	*buf;
 	uchar	init;
 	uchar	bdepth;
 	uchar	ctype;
@@ -102,8 +102,12 @@ typedef struct			s_png {
 	uchar	aunit;
 	uint	_block_len;
 	uchar	_block_type[4];
-	ushort	_def_len;
-	ushort	_def_nlen;
+	uchar	*_zlib_stream;
+	size_t	_zlib_len;
+	uint	*_codes;
+	size_t	_codes_len;
+	size_t	_data_size;
+	uchar	*_data;
 }						t_png;
 
 typedef struct	s_env	t_env;
@@ -193,7 +197,7 @@ t_map			*add_map(t_env *env, char *path);
 t_png			*decode_png(void *mlx, char *path);
 int				validate_crc(int fd, uchar *buf, t_png *png);
 int				checksum(uchar *buf);
-void			destroy_png(t_png **png);
+int				destroy_png(t_png **png);
 int				parse_ihdr(int fd, t_png *png);
 int				parse_phys(int fd, t_png *png);
 int				parse_idat(int fd, t_png *png);
@@ -201,7 +205,11 @@ int				parse_iend(int fd, t_png *png);
 int				parse_unkown(int fd, t_png *png);
 
 uchar			get_next_bits(uchar *buf, uint *pos, uint len);
-int				decompress_block(t_png *png, uchar *buf, uchar header);
-int				parse_zlib(t_png *png, uchar *buf);
+int				decompress_block(t_png *png, uchar *stream, uint *pos);
+int				parse_zlib(t_png *png);
+t_btree			*gen_default_tree(void);
+void			free_tree(t_btree **tree);
+int				read_codes(t_png *png, uchar *buf, t_btree *tree);
+int				unfilter_image(t_png *png);
 
 #endif

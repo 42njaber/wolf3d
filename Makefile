@@ -7,6 +7,7 @@ FILES = main.c \
 		loop_hook.c \
 		key_hooks.c \
 		mouse_hooks.c \
+		hooks.c \
 		read_map.c \
 		display_data.c \
 		window.c \
@@ -17,10 +18,12 @@ FILES = main.c \
 		hitbox.c \
 		png_decoder.c \
 		png_block_parser.c \
-		png_decompress.c \
-		png_parse_deflate.c \
 		png_integrity_checks.c \
-		hooks.c
+		png_parse_zlib.c \
+		png_parse_deflate.c \
+		png_create_huffman_tree.c \
+		png_unfilter_image.c
+		#png_deflate_code_reader.c
 
 CFLAGS = -Llibft -lft -Lft_printf -lftprintf -Lmlx -lmlx -framework OpenGL -framework AppKit
 FLAGS = -Wall -Wextra -Werror -Iinc/ -Ift_printf/ -Imlx/ -Ilibft/

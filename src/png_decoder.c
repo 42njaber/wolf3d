@@ -6,7 +6,7 @@
 /*   By: njaber <njaber@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/20 11:01:29 by njaber            #+#    #+#             */
-/*   Updated: 2018/08/22 17:57:31 by njaber           ###   ########.fr       */
+/*   Updated: 2018/09/04 22:10:41 by njaber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,8 @@
 ** -4: Unhandled critical data
 ** -5: Wrong parameter
 ** -10: Incorrect checksum
+** -66: Malloc error?
+** -666: Malloc error
 */
 
 static int		mbytes(int fd)
@@ -80,12 +82,17 @@ static int		decode_blocks(int fd, t_png *png)
 	return (0);
 }
 
-void			destroy_png(t_png **png)
+int				destroy_png(t_png **png)
 {
+	if ((*png)->_zlib_stream != NULL)
+		free((*png)->_zlib_stream);
+	if ((*png)->_codes != NULL)
+		free((*png)->_codes);
+	if ((*png)->_data != NULL)
+		free((*png)->_data);
 	free(*png);
-	if ((*png)->buf != NULL)
-		free((*png)->buf);
 	*png = NULL;
+	return (1);
 }
 
 t_png			*decode_png(void *mlx, char *path)
@@ -110,8 +117,9 @@ t_png			*decode_png(void *mlx, char *path)
 		ft_printf("%<#FFAA00>[PNG parser]%<0> Error code: %d\n", tmp);
 		return (NULL);
 	}
-	if ((ret->img = (t_img*)ft_memalloc(sizeof(t_img))) == NULL)
-		ft_error("Malloc error\n");
-	init_new_image(mlx, ret->img, ret->dim);
+	init_new_image(mlx, &ret->img, ret->dim);
+	for (int i = 0, j = 0; j < ret->dim.v[1]; i = (i + 1) % 
+			ret->dim.v[0], j += (i == 0 ? 1 : 0))
+		img_px(&ret->img, ret->buf[i + j * ret->dim.v[0]], ivec(i, j));
 	return (ret);
 }

@@ -6,7 +6,7 @@
 /*   By: njaber <njaber@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/20 14:19:30 by njaber            #+#    #+#             */
-/*   Updated: 2018/08/22 18:13:46 by njaber           ###   ########.fr       */
+/*   Updated: 2018/09/04 22:09:27 by njaber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ int		parse_phys(int fd, t_png *png)
 	uchar	buf[9];
 
 	ft_printf("Parsing pHYs\n");
-	if (!png->init || png->buf != NULL)
+	if (!png->init || png->_zlib_stream != NULL)
 		return (-1);
 	if (png->_block_len != 9)
 		return (-2);
@@ -65,21 +65,23 @@ int		parse_idat(int fd, t_png *png)
 	ft_printf("Parsing IDAT\n");
 	if (!png->init)
 		return (-1);
-	if (png->buf != NULL)
-		return (-4);
-	if ((buf = (uchar*)ft_memalloc(sizeof(uchar) * png->_block_len)) == NULL)
+	if ((buf = (uchar*)ft_memalloc(sizeof(uchar) * (png->_block_len +
+						png->_zlib_len))) == NULL && destroy_png(&png))
+		return (-666);
+	if (png->_zlib_stream != NULL)
 	{
-		destroy_png(&png);
-		ft_error("Malloc error\n");
+		ft_memcpy(buf, png->_zlib_stream, png->_zlib_len);
+		free(png->_zlib_stream);
+		png->_zlib_stream = NULL;
 	}
-	if (read(fd, buf, png->_block_len) != png->_block_len)
+	if (read(fd, buf + png->_zlib_len, png->_block_len) != png->_block_len)
 	{
 		free(buf);
 		return (-3);
 	}
-	if ((ret = parse_zlib(png, buf)) >= 0)
-		ret = validate_crc(fd, buf, png);
-	free(buf);
+	ret = validate_crc(fd, buf + png->_zlib_len, png);
+	png->_zlib_stream = buf;
+	png->_zlib_len += png->_block_len;
 	return (ret);
 }
 
@@ -88,11 +90,20 @@ int		parse_iend(int fd, t_png *png)
 	int		ret;
 
 	ft_printf("Parsing IEND\n");
-	if (!png->init || png->buf == NULL)
+	if (!png->init || png->_zlib_stream == NULL)
 		return (-1);
 	if (png->_block_len != 0)
 		return (-2);
-	ret = validate_crc(fd, NULL, png);
+	if ((png->buf = (uint*)ft_memalloc(sizeof(uint) *
+					png->dim.v[0] * png->dim.v[1])) == NULL)
+		return  (-666);
+	if ((ret = parse_zlib(png)) >= 0)
+		if ((ret = unfilter_image(png)) >= 0)
+			ret = validate_crc(fd, NULL, png);
+	free(png->_zlib_stream);
+	png->_zlib_stream = NULL;
+	free(png->_data);
+	png->_data = NULL;
 	if (ret < 0)
 		return (ret);
 	return (1);
@@ -109,10 +120,7 @@ int		parse_unkown(int fd, t_png *png)
 	if (!png->init)
 		return (-1);
 	if ((buf = (uchar*)ft_memalloc(sizeof(uchar) * png->_block_len)) == NULL)
-	{
-		destroy_png(&png);
-		ft_error("Malloc error\n");
-	}
+		return (-666);
 	if (read(fd, buf, png->_block_len) != png->_block_len)
 	{
 		free(buf);

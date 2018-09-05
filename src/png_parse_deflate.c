@@ -6,90 +6,56 @@
 /*   By: njaber <njaber@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/23 15:53:14 by njaber            #+#    #+#             */
-/*   Updated: 2018/08/25 15:38:38 by njaber           ###   ########.fr       */
+/*   Updated: 2018/09/04 21:42:31 by njaber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "wolf3d.h"
 
-static t_btree	*place_node(t_btree **tree, ushort pos, uchar bits, short val)
+static int		copy_noncompressed_data(t_png *png, uchar *stream, uint *pos)
 {
-	while (bits-- > 0)
+	uint	byte;
+	ushort	len;
+	ushort	nlen;
+
+	byte = *pos / 8 + 1;
+	len = (stream[byte + 1] << 8) + stream[byte];
+	nlen = (stream[byte + 3] << 8) + stream[byte + 2];
+	if ((~len & 0xFFFF) != nlen)
+		return (-10);
+	ft_printf("Uncompressed data len: %hu\n", len);
+	byte += 4;
+	while (len-- > 0)
 	{
-		if (*tree == NULL &&
-				(*tree = (t_btree*)ft_memalloc(sizeof(t_btree))) == NULL)
-			return (NULL);
-		(*tree)->val = -1;
-		tree = (pos >> bits) & 0x1 ? &(*tree)->b1: &(*tree)->b0;
+		if (png->_codes_len >= png->_data_size)
+			return (-2);
+		png->_codes[png->_codes_len] = stream[byte++];
+		png->_codes_len++;
 	}
-	if (*tree != NULL ||
-			(*tree = (t_btree*)ft_memalloc(sizeof(t_btree))) == NULL)
-		return (NULL);
-	(*tree)->val = val;
-	return (*tree);
+	*pos = byte * 8;
+	return (0);
 }
 
-static t_btree	*place_default_node(t_btree **tree, short val)
-{
-	t_btree		*ret;
-
-	if (val < 144)
-		ret = place_node(tree, 0x30 + val, 8, val);
-	else if (val < 256)
-		ret = place_node(tree, 0x190 + val - 144, 9, val);
-	else if (val < 280)
-		ret = place_node(tree, val - 256, 7, val);
-	else if (val < 288)
-		ret = place_node(tree, 0xC0 + val - 280, 8, val);
-	else
-		return (NULL);
-	return (ret);
-}
-
-static void		free_tree(t_btree **tree)
-{
-	if (*tree != NULL)
-	{
-		free_tree(&(*tree)->b0);
-		free_tree(&(*tree)->b1);
-		free(*tree);
-		*tree = NULL;
-	}
-}
-
-static t_btree	*gen_default_tree(void)
-{
-	t_btree		*tree;
-	short		val;
-
-	val = 0;
-	tree = NULL;
-	while (val < 288)
-		if (place_default_node(&tree, val++) == NULL)
-		{
-			free_tree(&tree);
-			return (NULL);
-		}
-	return (tree);
-}
-
-int					decompress_block(t_png *png, uchar *buf, uchar header)
+int				decompress_block(t_png *png, uchar *stream, uint *pos)
 {
 	t_btree	*tree;
+	int		ret;
+	uchar	header;
 
-	(void)png;
-	(void)buf;
-	if ((header & 0x6) == 0x4)
+	if ((*pos + 1) / 8 >= png->_zlib_len - 6)
+		return (-2);
+	header = get_next_bits(stream, pos, 1);
+	ret = 0;
+	if ((header >> 1) == 0)
+		ret = copy_noncompressed_data(png, stream, pos);
+	else if ((header >> 1) == 0x1)
 	{
 		if ((tree = gen_default_tree()) == NULL)
-		{
-			destroy_png(&png);
-			free(buf);
-			ft_error("Error while creating Huffman tree\n");
-		}
+			return (-66);
+		//ret = read_codes(png, stream, tree);
 		free_tree(&tree);
 	}
 	else
 		return (-4);
-	return (0);
+	return (ret);
 }
