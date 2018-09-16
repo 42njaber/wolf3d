@@ -6,7 +6,7 @@
 /*   By: njaber <njaber@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/20 11:01:29 by njaber            #+#    #+#             */
-/*   Updated: 2018/09/04 22:10:41 by njaber           ###   ########.fr       */
+/*   Updated: 2018/09/15 17:46:09 by njaber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,14 +19,15 @@
 ** -3: Unexpected EOF
 ** -4: Unhandled critical data
 ** -5: Wrong parameter
+** -6: Unkown error
+** -7: Wrong lens for huffman tree
 ** -10: Incorrect checksum
-** -66: Malloc error?
 ** -666: Malloc error
 */
 
 static int		mbytes(int fd)
 {
-	uchar	bytes[8];
+	t_uchar	bytes[8];
 
 	if (read(fd, bytes, 8) != 8)
 		return (0);
@@ -44,15 +45,13 @@ static int		mbytes(int fd)
 
 static int		parse_block(int fd, t_png *png)
 {
-	ft_printf("Chunk type: %4.4s\nSize: %u\n",
-			png->_block_type, png->_block_len);
-	if (*(uint*)png->_block_type == 0x52444849)
+	if (*(t_uint*)png->_block_type == 0x52444849)
 		return (parse_ihdr(fd, png));
-	else if (*(uint*)png->_block_type == 0x73594870)
+	else if (*(t_uint*)png->_block_type == 0x73594870)
 		return (parse_phys(fd, png));
-	else if (*(uint*)png->_block_type == 0x54414449)
+	else if (*(t_uint*)png->_block_type == 0x54414449)
 		return (parse_idat(fd, png));
-	else if (*(uint*)png->_block_type == 0x444E4549)
+	else if (*(t_uint*)png->_block_type == 0x444E4549)
 		return (parse_iend(fd, png));
 	else
 		return (parse_unkown(fd, png));
@@ -60,7 +59,7 @@ static int		parse_block(int fd, t_png *png)
 
 static int		decode_blocks(int fd, t_png *png)
 {
-	uchar	buf[4];
+	t_uchar	buf[4];
 	int		i;
 	int		ret;
 
@@ -69,8 +68,8 @@ static int		decode_blocks(int fd, t_png *png)
 	{
 		if (read(fd, buf, 4) != 4)
 			return (0);
-		png->_block_len = (buf[0] << 12) | (buf[1] << 8) |
-			(buf[2] << 4) | buf[3];
+		png->_block_len = (buf[0] << 24) | (buf[1] << 16) |
+			(buf[2] << 8) | buf[3];
 		if (read(fd, png->_block_type, 4) != 4)
 			return (-2);
 		ret = parse_block(fd, png);
@@ -90,12 +89,20 @@ int				destroy_png(t_png **png)
 		free((*png)->_codes);
 	if ((*png)->_data != NULL)
 		free((*png)->_data);
+	if ((*png)->buf != NULL)
+		free((*png)->buf);
+	if ((*png)->ltree != NULL)
+		free_tree(&(*png)->ltree);
+	if ((*png)->dtree != NULL)
+		free_tree(&(*png)->dtree);
+	if ((*png)->cltree != NULL)
+		free_tree(&(*png)->cltree);
 	free(*png);
 	*png = NULL;
 	return (1);
 }
 
-t_png			*decode_png(void *mlx, char *path)
+t_png			*decode_png(char *path)
 {
 	t_png	*ret;
 	int		fd;
@@ -113,13 +120,9 @@ t_png			*decode_png(void *mlx, char *path)
 	close(fd);
 	if (tmp < 0)
 	{
-		destroy_png(&ret);
 		ft_printf("%<#FFAA00>[PNG parser]%<0> Error code: %d\n", tmp);
+		destroy_png(&ret);
 		return (NULL);
 	}
-	init_new_image(mlx, &ret->img, ret->dim);
-	for (int i = 0, j = 0; j < ret->dim.v[1]; i = (i + 1) % 
-			ret->dim.v[0], j += (i == 0 ? 1 : 0))
-		img_px(&ret->img, ret->buf[i + j * ret->dim.v[0]], ivec(i, j));
 	return (ret);
 }

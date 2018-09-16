@@ -6,24 +6,24 @@
 /*   By: njaber <neyl.jaber@gmail.com>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/03/14 22:58:17 by njaber            #+#    #+#             */
-/*   Updated: 2018/04/08 21:03:22 by njaber           ###   ########.fr       */
+/*   Updated: 2018/09/16 19:40:12 by njaber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libgxns.h"
+#include "wolf3d.h"
 
-unsigned int			color_gradiant(unsigned int *colors, t_scal gradiant)
+t_uint		color_gradiant(t_uint c1, t_uint c2, t_scal gradiant)
 {
 	unsigned int		ret;
 
 	ret = 0;
-	ret += (unsigned int)((colors[0] >> 24) * (1 - gradiant) +
-			(colors[1] >> 24) * gradiant - 0.5) << 24;
-	ret += (unsigned int)(((colors[0] >> 16) & 0xFF) * (1 - gradiant) +
-			((colors[1] >> 16) & 0xFF) * gradiant - 0.5) << 16;
-	ret += (unsigned int)(((colors[0] >> 8) & 0xFF) * (1 - gradiant) +
-			((colors[1] >> 8) & 0xFF) * gradiant - 0.5) << 8;
-	ret += (unsigned int)((colors[0] & 0xFF) * (1 - gradiant) +
-			(colors[1] & 0xFF) * gradiant - 0.5);
+	ret += (t_uint)((c1 >> 24) * (1 - gradiant) +
+			(c2 >> 24) * gradiant - 0.5) << 24;
+	ret += (t_uint)(((c1 >> 16) & 0xFF) * (1 - gradiant) +
+			((c2 >> 16) & 0xFF) * gradiant - 0.5) << 16;
+	ret += (t_uint)(((c1 >> 8) & 0xFF) * (1 - gradiant) +
+			((c2 >> 8) & 0xFF) * gradiant - 0.5) << 8;
+	ret += (t_uint)((c1 & 0xFF) * (1 - gradiant) +
+			(c2 & 0xFF) * gradiant - 0.5);
 	return (ret);
 }

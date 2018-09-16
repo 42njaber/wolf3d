@@ -6,24 +6,23 @@
 /*   By: njaber <njaber@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/23 15:53:14 by njaber            #+#    #+#             */
-/*   Updated: 2018/09/04 21:42:31 by njaber           ###   ########.fr       */
+/*   Updated: 2018/09/15 23:23:32 by njaber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "wolf3d.h"
 
-static int		copy_noncompressed_data(t_png *png, uchar *stream, uint *pos)
+static int		copy_noncompressed_data(t_png *png, t_uchar *stream, t_uint *pos)
 {
-	uint	byte;
-	ushort	len;
-	ushort	nlen;
+	t_uint		byte;
+	t_ushort	len;
+	t_ushort	nlen;
 
-	byte = *pos / 8 + 1;
+	byte = (*pos + 7) / 8;
 	len = (stream[byte + 1] << 8) + stream[byte];
 	nlen = (stream[byte + 3] << 8) + stream[byte + 2];
 	if ((~len & 0xFFFF) != nlen)
 		return (-10);
-	ft_printf("Uncompressed data len: %hu\n", len);
 	byte += 4;
 	while (len-- > 0)
 	{
@@ -36,26 +35,32 @@ static int		copy_noncompressed_data(t_png *png, uchar *stream, uint *pos)
 	return (0);
 }
 
-int				decompress_block(t_png *png, uchar *stream, uint *pos)
+int				decompress_block(t_png *png, t_uchar *stream, t_uint *pos)
 {
-	t_btree	*tree;
 	int		ret;
-	uchar	header;
+	t_uchar	header;
 
 	if ((*pos + 1) / 8 >= png->_zlib_len - 6)
 		return (-2);
-	header = get_next_bits(stream, pos, 1);
+	header = get_next_bits(stream, pos, 2);
 	ret = 0;
-	if ((header >> 1) == 0)
+	if (header == 0)
 		ret = copy_noncompressed_data(png, stream, pos);
-	else if ((header >> 1) == 0x1)
-	{
-		if ((tree = gen_default_tree()) == NULL)
-			return (-66);
-		//ret = read_codes(png, stream, tree);
-		free_tree(&tree);
-	}
-	else
+	else if (header == 3)
 		return (-4);
+	else
+	{
+		if (header == 2)
+		{
+			if ((ret = read_tree(png, stream, pos)) < 0)
+				return (ret);
+		}
+		else if ((ret = gen_default_tree(png)) < 0)
+			return (ret);
+		ret = read_codes(png, stream, pos);
+	}
+	free_tree(&png->ltree);
+	free_tree(&png->dtree);
+	free_tree(&png->cltree);
 	return (ret);
 }

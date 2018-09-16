@@ -6,15 +6,15 @@
 /*   By: njaber <njaber@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/09/04 14:17:43 by njaber            #+#    #+#             */
-/*   Updated: 2018/09/04 15:49:48 by njaber           ###   ########.fr       */
+/*   Updated: 2018/09/15 21:02:12 by njaber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "wolf3d.h"
 
-static uint			lencode(short val)
+static t_uint	lencode(short val)
 {
-	uint	len;
+	t_uint	len;
 
 	if (val == 285)
 		len = 258;
@@ -30,9 +30,9 @@ static uint			lencode(short val)
 	return (len);
 }
 
-static uint			distcode(short val)
+static t_uint	distcode(short val)
 {
-	uint	dist;
+	t_uint	dist;
 
 	if (val > 29)
 		return (0);
@@ -53,75 +53,69 @@ static uint			distcode(short val)
 	return (dist);
 }
 
-static int			code_tobuf(t_png *png, short val, uint *pos, uchar *buf)
+static int	get_dist(t_png *png, t_uint *pos, t_uchar *stream)
 {
-	uint	stockval;
-	uint	tmp;
+	short	code;
+	t_uint	tmp;
+	int		dist;
 
-	stockval = 0;
-	ft_printf("Val: %02hX | %hd\n", val, val);
-	if ((int)png->_codes_pos >= png->dim.v[0] * png->dim.v[1])
+	if (png->_codes_len >= png->_data_size)
 		return (-2);
-	if (png->_codes_pos != 0 && png->_codes_buf[png->_codes_pos - 1] < 0)
+	code = read_next(png, stream, pos, png->dtree);
+	if (code < 0)
+		return (code);
+	dist = distcode((t_uchar)code);
+	if (code > 3)
 	{
-		stockval = distcode(val);
-		ft_printf("Dist: %i\n", stockval);
-		if (stockval == 0)
-			return (-1);
+		if ((*pos + (code - 4) / 2) / 8 >= png->_zlib_len - 6)
+			return (-2);
+		tmp = get_next_bits(stream, pos, (code - 2) / 2);
+		dist += tmp;
 	}
-	else if (val > 256 && val < 285)
-	{
-		stockval = lencode(val);
-		if (val > 264)
-		{
-			if ((int)(*pos + (val - 265) / 4) / 8 >= (int)png->_block_len - 4)
-				return (-2);
-			tmp = get_next_bits(buf, pos, 1 + (val - 265) / 4);
-			ft_printf("%0*b\n", 1 + (val - 265) / 4, tmp);
-			stockval +=tmp;
-		}
-		ft_printf("Len: %i\n", stockval);
-		stockval = -stockval;
-	}
-	else
-		stockval = val;
-	png->_codes_buf[png->_codes_pos++] = stockval;
+	png->_codes[png->_codes_len++] = dist;
 	return (0);
 }
 
-int					read_codes(t_png *png, uchar *buf, t_btree *tree)
+static int	code_tobuf(t_png *png, short val, t_uint *pos, t_uchar *stream)
 {
-	t_btree		*current;
-	uint		pos;
+	t_uint	stockval;
+	t_uint	tmp;
+
+	stockval = 0;
+	if (png->_codes_len >= png->_data_size)
+		return (-2);
+	else if (val > 256 && val < 286)
+	{
+		stockval = lencode(val);
+		if (val > 264 && val < 285)
+		{
+			if ((*pos + (val - 265) / 4) / 8 >= png->_zlib_len - 6)
+				return (-2);
+			tmp = get_next_bits(stream, pos, 1 + (val - 265) / 4);
+			stockval += tmp;
+		}
+		png->_codes[png->_codes_len++] = -stockval;
+		return (get_dist(png, pos, stream));
+	}
+	else
+		png->_codes[png->_codes_len++] = val;
+	return (0);
+}
+
+int			read_codes(t_png *png, t_uchar *stream, t_uint *pos)
+{
+	short		val;
 	int			ret;
 
-	current = tree;
-	pos = 20;
-	while (1)
+	val = read_next(png, stream, pos, png->ltree);
+	while (val >= 0 && val != 256)
 	{
-		if (current->val != -1)
-		{
-			ft_printf("\n", pos);
-			if ((ret = code_tobuf(png, current->val, &pos, buf)) < 0)
-				return (ret);
-			if (current->val == 256)
-				break ;
-			ft_printf("Pos: %u\n", pos);
-			current = tree;
-		}
-		else if (pos / 8 >= png->_block_len - 4)
-			return (-2);
-		else if (get_next_bits(buf, &pos, 1))
-		{
-			current = current->b1;
-			ft_printf("1");
-		}
-		else
-		{
-			current = current->b0;
-			ft_printf("0");
-		}
+		if ((ret = code_tobuf(png, val, pos, stream)) < 0)
+			return (ret);
+		val = read_next(png, stream, pos, png->ltree);
 	}
+	if (val != 256)
+		return (val);
 	return (0);
 }
 

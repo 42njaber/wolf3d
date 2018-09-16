@@ -6,7 +6,7 @@
 /*   By: njaber <neyl.jaber@gmail.com>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/18 17:01:19 by njaber            #+#    #+#             */
-/*   Updated: 2018/09/04 16:00:51 by njaber           ###   ########.fr       */
+/*   Updated: 2018/09/16 19:14:02 by njaber           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,10 @@ static void		launch_window(t_env *env)
 		ft_error("[Error] Failed to initialize mlx\n");
 	if ((init_new_win(env, &env->win, win_size, "Wolf3D")) == EXIT_FAILURE)
 		ft_error("[Error] Failed to initialize window\n");
-	if ((env->text = decode_png(env->mlx, "ressource/test.png")) == NULL)
-		ft_error("[Error] Failed to read tmp.png\n");
+	if ((env->walls = decode_png("ressource/tmp.png")) == NULL ||
+			(env->ceil = decode_png("ressource/florenzo.png")) == NULL ||
+			(env->floor = decode_png("ressource/cobblestone.png")) == NULL)
+		ft_error("[Error] Failed to read a png file\n");
 	set_hooks(env);
 }
 
@@ -31,8 +33,8 @@ void static		parse_arguments(t_env *env, int argc, char **argv)
 {
 	int		i;
 
-	env->win.w = DEFAULT_WINDOW_WIDTH;
-	env->win.h = DEFAULT_WINDOW_HEIGHT;
+	env->win.size.v[0] = DEFAULT_WINDOW_WIDTH;
+	env->win.size.v[1] = DEFAULT_WINDOW_HEIGHT;
 	i = 0;
 	while (++i < argc)
 	{
