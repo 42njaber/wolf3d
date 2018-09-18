@@ -3,10 +3,12 @@ DEBUG = TRUE
 FILES = main.c \
 		init.c \
 		display.c \
+		paint_col.c \
 		gen_type.c \
 		loop_hook.c \
 		key_hooks.c \
 		mouse_hooks.c \
+		hooks.c \
 		read_map.c \
 		display_data.c \
 		window.c \
@@ -15,8 +17,18 @@ FILES = main.c \
 		matrix.c \
 		math.c \
 		hitbox.c \
+		vector2.c \
+		vector3.c \
+		colors.c \
 		png_decoder.c \
-		hooks.c
+		png_block_parser.c \
+		png_integrity_checks.c \
+		png_parse_zlib.c \
+		png_parse_deflate.c \
+		png_create_huffman_tree.c \
+		png_read_huffman_tree.c \
+		png_deflate_code_reader.c \
+		png_unfilter_image.c
 
 CFLAGS = -Llibft -lft -Lft_printf -lftprintf -Lmlx -lmlx -framework OpenGL -framework AppKit
 FLAGS = -Wall -Wextra -Werror -Iinc/ -Ift_printf/ -Imlx/ -Ilibft/
