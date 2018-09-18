@@ -1,11 +1,12 @@
-/* ************************************************************************** */ /*                                                                            */
+/* ************************************************************************** */
+/*                                                                            */
 /*                                                        :::      ::::::::   */
 /*   wolf3d.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: cdittric <cdittric@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/18 16:28:34 by cdittric          #+#    #+#             */
-/*   Updated: 2018/08/18 21:12:19 by njaber           ###   ########.fr       */
+/*   Updated: 2018/09/16 20:29:44 by cdittric         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +28,10 @@
 # define DEFAULT_WINDOW_WIDTH 1200
 # define DEFAULT_WINDOW_HEIGHT 800
 
+# define WALL_MAX INT_MAX
+# define VWALL_MAX USHRT_MAX
+# define CLUSTER_STACK_SIZE 1024
+# define ENTITY_STACK_SIZE 1024
 // Map tile size
 # define SIZE 10.
 
@@ -52,18 +57,70 @@ typedef struct			s_ivec {
 	int		v[2];
 }						t_ivec;
 
+typedef struct			s_texture {
+	char	*buf;
+	t_ivec	dim;
+}						t_texture;
+
+typedef struct			s_sprite {
+	t_texture	**tex[8];
+	int			frame_count;
+}						t_sprite;
+
 typedef struct			s_entity {
-	t_vec3		pos;
+	t_vec3			pos;
+	t_sprite		spr;
+	int				frame;
+	int				frame_delay;
+	int				frame_timer;
+	struct s_entity	*next;
 }						t_entity;
+
+/*
+** t_wall:
+** Contains a vertex of the wall geometry and data of the wall of which it is
+** the first vertex.
+** - sector:
+** 		0 or positive:	The wall is a portal toward the sector of this index.
+** 		-1:				Solid wall.
+**		-2:				End of wall. The next wall won't be drawn.
+*/
+
+typedef struct			s_wall {
+	t_vec2			pos;
+	int				sector;
+	unsigned int	wall_reference;
+	unsigned int	texture;
+}						t_wall;
+
+typedef struct			s_sector {
+	t_scal			floor_height;
+	t_scal			ceiling_height;
+	t_entity		*entity_list;
+	t_wall			*vwalls;
+	unsigned int	vwalls_count;
+	unsigned int	walls_start;
+	unsigned int	walls_count;
+	unsigned int	sprites_start;
+	unsigned int	texture;
+}						t_sector;
+
+typedef struct			s_cluster {
+	unsigned int		wall_start;
+	unsigned int		wall_count;
+}						t_cluster;
 
 typedef struct s_map	t_map;
 
 struct					s_map {
-	char	*path;
-	int		**grid;
-	t_ivec	dim;
-	t_map	**self;
-	t_map	*next;
+	char		*path;
+	int			**grid;
+	t_ivec		dim;
+	t_wall		*walls;
+	t_sector	*sectors;
+	int			sectors_count;
+	t_map		**self;
+	t_map		*next;
 };
 
 typedef struct	s_img {
@@ -77,6 +134,18 @@ typedef struct	s_img {
 
 typedef struct	s_env	t_env;
 
+/*
+** s_win:
+** Contains variable local to the window including rendering data such as:
+** - occlusion: Screen buffer of opacity of colors currently on the screen.
+** - occlusion_top: Number of pixels occluded on the top for each column.
+** - occlusion_bottom: Number of pixels occluded on the bottom for each column.
+** - occlusion_column: For each column wether it is occluded or not.
+** - clusters: Stack of clusters to be sorted in depth order before rendering.
+** - entities: Stack of entities to be sorted in depth order before rendering.
+** - visited_sectors: For each sector wether it has been visited during render.
+*/
+
 typedef struct			s_win {
 	t_env			*env;
 	void			*mlx;
@@ -88,6 +157,15 @@ typedef struct			s_win {
 	int				frame;
 	t_scal			fps;
 	unsigned long	frames[30];
+	unsigned char	*occlusion;
+	unsigned int	*occlusion_top;
+	unsigned int	*occlusion_bottom;
+	unsigned char	*occlusion_column;
+	int				clusters_count;
+	t_cluster		clusters[CLUSTER_STACK_SIZE];
+	int				entities_count;
+	t_entity		*entities[ENTITY_STACK_SIZE];
+	char			*visited_sectors;
 }						t_win;
 
 struct					s_env {
@@ -103,6 +181,8 @@ struct					s_env {
 	t_scal		origin_rot;
 	t_mat2		cam_mat;
 	t_map		*map_list;
+	t_map		*map;
+	int			current_sector;
 	t_img		*text;
 };
 
