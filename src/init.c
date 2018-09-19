@@ -6,7 +6,7 @@
 /*   By: njaber <neyl.jaber@gmail.com>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/20 13:17:27 by njaber            #+#    #+#             */
-/*   Updated: 2018/08/20 11:28:09 by njaber           ###   ########.fr       */
+/*   Updated: 2018/09/18 17:21:03 by cdittric         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 void			init_environment(t_env *env)
 {
+	debug_map(env);
 	ft_bzero(env, sizeof(*env));
 	env->pos = vec3(5., 6., 5);
 	env->rot = 0.;

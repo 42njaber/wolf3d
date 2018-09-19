@@ -6,7 +6,7 @@
 /*   By: cdittric <cdittric@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/18 16:28:34 by cdittric          #+#    #+#             */
-/*   Updated: 2018/09/18 16:25:03 by cdittric         ###   ########.fr       */
+/*   Updated: 2018/09/19 15:59:18 by cdittric         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,10 @@ typedef struct			s_vec4 {
 typedef struct			s_mat2 {
 	t_scal	m[4];
 }						t_mat2;
+
+typedef struct			s_mat3 {
+	t_scal	m[9];
+}						t_mat3;
 
 typedef struct			s_ivec {
 	int		v[2];
@@ -121,6 +125,7 @@ struct					s_map {
 	int			**grid;
 	t_ivec		dim;
 	t_wall		*walls;
+	t_uint		walls_count;
 	t_sector	*sectors;
 	int			sectors_count;
 	t_map		**self;
@@ -170,7 +175,19 @@ typedef struct			s_png {
 	t_btree	*cltree;
 }						t_png;
 
-typedef struct	s_env	t_env;
+typedef struct s_env	t_env;
+
+typedef struct			s_cam {
+	unsigned char	*occlusion;
+	int				*occlusion_top;
+	int				*occlusion_bottom;
+	unsigned char	*occlusion_column;
+	int				clusters_count;
+	t_cluster		clusters[CLUSTER_STACK_SIZE];
+	int				entities_count;
+	t_entity		*entities[ENTITY_STACK_SIZE];
+	char			*visited_sectors;
+}						t_cam;
 
 /*
 ** s_win:
@@ -189,24 +206,16 @@ typedef struct			s_win {
 	void			*mlx;
 	void			*win;
 	t_img			img;
-	t_ivec			size;
+	union {t_ivec size; struct {int w; int h;};}; // TODO: w and h are better.
 	int				frame;
 	t_scal			fps;
 	unsigned long	frames[30];
-	unsigned char	*occlusion;
-	unsigned int	*occlusion_top;
-	unsigned int	*occlusion_bottom;
-	unsigned char	*occlusion_column;
-	int				clusters_count;
-	t_cluster		clusters[CLUSTER_STACK_SIZE];
-	int				entities_count;
-	t_entity		*entities[ENTITY_STACK_SIZE];
-	char			*visited_sectors;
 }						t_win;
 
 struct					s_env {
 	void		*mlx;
 	t_win		win;
+	t_cam		cam;
 	char		keys[512];
 	int			button;
 	t_ivec		mouse_pos;
@@ -254,6 +263,10 @@ t_mat2			m2identity(void);
 t_mat2			m2rotation(t_scal angle);
 t_mat2			m2dot(t_mat2 m1, t_mat2 m2);
 t_vec2			m2dotv2(t_mat2 m, t_vec2 v);
+t_mat2			m3identity(void);
+t_mat3			m3rotation(t_scal angle);
+t_mat3			m3dot(t_mat3 m1, t_mat3 m2);
+t_vec3			m3dotv2(t_mat3 m, t_vec3 v);
 
 t_vec3			vec3_sub(t_vec3 v1, t_vec3 v2);
 t_vec3			vec3_add(t_vec3 v1, t_vec3 v2);
@@ -307,5 +320,8 @@ short			read_next(t_png *png, t_uchar *stream, t_uint *pos, t_btree *tree);
 void			free_tree(t_btree **tree);
 int				read_codes(t_png *png, t_uchar *buf, t_uint *pos);
 int				recompose_image(t_png *png);
+
+void			debug_map(t_env *env);
+void			engine(t_env *env);
 
 #endif

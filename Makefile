@@ -28,7 +28,8 @@ FILES = main.c \
 		png_create_huffman_tree.c \
 		png_read_huffman_tree.c \
 		png_deflate_code_reader.c \
-		png_unfilter_image.c
+		png_unfilter_image.c \
+		engine.c
 
 CFLAGS = -Llibft -lft -Lft_printf -lftprintf -Lmlx -lmlx -framework OpenGL -framework AppKit
 FLAGS = -Wall -Wextra -Werror -Iinc/ -Ift_printf/ -Imlx/ -Ilibft/

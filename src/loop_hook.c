@@ -6,7 +6,7 @@
 /*   By: njaber <neyl.jaber@gmail.com>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/20 16:00:11 by njaber            #+#    #+#             */
-/*   Updated: 2018/09/15 15:18:26 by njaber           ###   ########.fr       */
+/*   Updated: 2018/09/19 15:59:11 by cdittric         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ int				loop_hook(t_env *env)
 {
 	move(env);
 	update(env);
-	display(env);
+	engine(env);
 	paint_window(&env->win, 1);
 	print_data(env);
 	return (0);

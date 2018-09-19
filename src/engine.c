@@ -6,25 +6,66 @@
 /*   By: cdittric <cdittric@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/20 12:29:47 by cdittric          #+#    #+#             */
-/*   Updated: 2018/09/16 20:05:30 by cdittric         ###   ########.fr       */
+/*   Updated: 2018/09/19 16:00:04 by cdittric         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "wolf3d.h"
 
-static void		sort_entities(t_env, int sector)
+void			debug_map(t_env *env)
 {
+	static t_wall	walls[5] = {
+		{{}, 0, 0, 0},
+		{{}, 0, 0, 0},
+		{{}, 0, 0, 0},
+		{{}, 0, 0, 0},
+		{{}, 0, 0, 0}};
+	static t_sector	sector = {0., SIZE, NULL, NULL, 0, 0, 5, 0, 0};
+	static t_map	map = {};
+
+	walls[0].pos = vec2(cos(M_PI * 2. * 0. / 5.), sin(M_PI * 2. * 0. / 5.));
+	walls[1].pos = vec2(cos(M_PI * 2. * 1. / 5.), sin(M_PI * 2. * 1. / 5.));
+	walls[2].pos = vec2(cos(M_PI * 2. * 2. / 5.), sin(M_PI * 2. * 2. / 5.));
+	walls[3].pos = vec2(cos(M_PI * 2. * 3. / 5.), sin(M_PI * 2. * 3. / 5.));
+	walls[4].pos = vec2(cos(M_PI * 2. * 4. / 5.), sin(M_PI * 2. * 4. / 5.));
+	map.path = "test";
+	map.walls = walls;
+	map.walls_count = 5;
+	map.sectors = &sector;
+	map.sectors_count = 1;
+	map.self = &env->map_list;
+	map.next = env->map_list;
+	env->map_list = &map;
+	env->map = &map;
+}
+
+static void		transform_map(t_env *env)
+{
+	unsigned int i;
+
+	i = 0;
+	while (i < env->map->walls_count)
+	{
+		i++;
+	}
+}
+static void		sort_entities(t_env *env, int sector)
+{
+	env = NULL;
+	sector = 0;
 }
 
 static void		sort_walls(t_env *env, int sector)
 {
+	env = NULL;
+	sector = 0;
 }
 
 static void		generate_drawing_stack(t_env *env)
 {
-	int		i;
-	int		wall_count
-	int		sector;
+	unsigned int	i;
+	int				wall_count;
+	int				sector;
 
 	i = 0;
 	wall_count = 0;
@@ -34,13 +75,14 @@ static void		generate_drawing_stack(t_env *env)
 		sort_entities(env, sector);
 		sort_walls(env, sector);
 		i = 0;
-		while (i < env->map.sectors[sector].wall_count)
-			env->win.clusters
+		while (i < env->map->sectors[sector].walls_count)
+			;
 	}
 }
 
 static void		render_drawing_stack(t_env *env)
 {
+	env = NULL;
 	return ;
 }
 
@@ -50,17 +92,17 @@ static void		render_background(t_env *env)
 	int		y;
 
 	x = 0;
-	while (x < env->win.w)
+	while (x < env->win.size.v[0])
 	{
-		if (!env->win.column_occlusion[x])
+		if (!env->cam.occlusion_column[x])
 		{
-			y = env->top_occlusion[x];
-			while (y < env->win.h - env->win.bottom_occlusion[x])
+			y = env->cam.occlusion_top[x];
+			while (y < env->win.size.v[1] - env->cam.occlusion_bottom[x])
 			{
-				if (env->win.occlusion[x * env->win.h + y] < 255)
+				if (env->cam.occlusion[x * env->win.size.v[1] + y] < 255)
 				{
 					// TODO: Apply transparency + texture mapping to background
-					img_px(&env->img, 0xff0000, ivec(x, y));
+					img_px(&env->win.img, 0xff0000, ivec(x, y));
 				}
 				y++;
 			}
@@ -71,16 +113,15 @@ static void		render_background(t_env *env)
 
 void	engine(t_env *env)
 {
-	mlx_clear_window(env->mlx);
-	ft_bzero(env->win.occlusion, env->win.w * env->win.h * sizeof(char));
-	ft_bzero(env->win.top_occlusion, env->win.w * sizeof(int));
-	ft_bzero(env->win.bottom_occlusion, env->win.w * sizeof(int));
-	ft_bzero(env->win.column_occlusion, env->win.w * sizeof(char));
-	ft_bzero(env->win.visited_sectors, env->map.sectors_count * sizeof(char));
-	env->win.clusters_count = 0;
-	env->win.entities_count = 0;
+	ft_bzero(env->cam.occlusion, env->win.w * env->win.h * sizeof(char));
+	ft_bzero(env->cam.occlusion_top, env->win.w * sizeof(int));
+	ft_bzero(env->cam.occlusion_bottom, env->win.w * sizeof(int));
+	ft_bzero(env->cam.occlusion_column, env->win.w * sizeof(char));
+	ft_bzero(env->cam.visited_sectors, env->map->sectors_count * sizeof(char));
+	env->cam.clusters_count = 0;
+	env->cam.entities_count = 0;
+	transform_map(env);
 	generate_drawing_stack(env);
 	render_drawing_stack(env);
 	render_background(env);
 }
-	
