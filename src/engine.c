@@ -6,7 +6,7 @@
 /*   By: cdittric <cdittric@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/20 12:29:47 by cdittric          #+#    #+#             */
-/*   Updated: 2018/09/19 16:00:04 by cdittric         ###   ########.fr       */
+/*   Updated: 2018/09/25 18:30:49 by cdittric         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,19 +15,19 @@
 void			debug_map(t_env *env)
 {
 	static t_wall	walls[5] = {
-		{{}, 0, 0, 0},
-		{{}, 0, 0, 0},
-		{{}, 0, 0, 0},
-		{{}, 0, 0, 0},
-		{{}, 0, 0, 0}};
+		{{}, 0, 0, 0, {{{0, 0}}}, {{{0, 0}}}},
+		{{}, 0, 0, 0, {{{0, 0}}}, {{{0, 0}}}},
+		{{}, 0, 0, 0, {{{0, 0}}}, {{{0, 0}}}},
+		{{}, 0, 0, 0, {{{0, 0}}}, {{{0, 0}}}},
+		{{}, 0, 0, 0, {{{0, 0}}}, {{{0, 0}}}}};
 	static t_sector	sector = {0., SIZE, NULL, NULL, 0, 0, 5, 0, 0};
 	static t_map	map = {};
 
-	walls[0].pos = vec2(cos(M_PI * 2. * 0. / 5.), sin(M_PI * 2. * 0. / 5.));
-	walls[1].pos = vec2(cos(M_PI * 2. * 1. / 5.), sin(M_PI * 2. * 1. / 5.));
-	walls[2].pos = vec2(cos(M_PI * 2. * 2. / 5.), sin(M_PI * 2. * 2. / 5.));
-	walls[3].pos = vec2(cos(M_PI * 2. * 3. / 5.), sin(M_PI * 2. * 3. / 5.));
-	walls[4].pos = vec2(cos(M_PI * 2. * 4. / 5.), sin(M_PI * 2. * 4. / 5.));
+	walls[0].pos = vec3(cos(M_PI * 2. * 0. / 5.), sin(M_PI * 2. * 0. / 5.), 1.);
+	walls[1].pos = vec3(cos(M_PI * 2. * 1. / 5.), sin(M_PI * 2. * 1. / 5.), 1.);
+	walls[2].pos = vec3(cos(M_PI * 2. * 2. / 5.), sin(M_PI * 2. * 2. / 5.), 1.);
+	walls[3].pos = vec3(cos(M_PI * 2. * 3. / 5.), sin(M_PI * 2. * 3. / 5.), 1.);
+	walls[4].pos = vec3(cos(M_PI * 2. * 4. / 5.), sin(M_PI * 2. * 4. / 5.), 1.);
 	map.path = "test";
 	map.walls = walls;
 	map.walls_count = 5;
@@ -49,6 +49,7 @@ static void		transform_map(t_env *env)
 		i++;
 	}
 }
+
 static void		sort_entities(t_env *env, int sector)
 {
 	env = NULL;

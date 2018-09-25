@@ -6,7 +6,7 @@
 /*   By: cdittric <cdittric@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/08/18 16:28:34 by cdittric          #+#    #+#             */
-/*   Updated: 2018/09/19 15:59:18 by cdittric         ###   ########.fr       */
+/*   Updated: 2018/09/25 18:19:17 by cdittric         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,15 +42,15 @@ typedef unsigned char	t_uchar;
 typedef unsigned short	t_ushort;
 
 typedef struct			s_vec2 {
-	t_scal	v[2];
+	union {t_scal v[2]; struct {t_scal x; t_scal y;};};
 }						t_vec2;
 
 typedef struct			s_vec3 {
-	t_scal	v[3];
+	union {t_scal v[3]; struct {t_scal x; t_scal y; t_scal z;};};
 }						t_vec3;
 
 typedef struct			s_vec4 {
-	t_scal	v[4];
+	union {t_scal v[4]; struct {t_scal x; t_scal y; t_scal z; t_scal w;};};
 }						t_vec4;
 
 typedef struct			s_mat2 {
@@ -62,7 +62,7 @@ typedef struct			s_mat3 {
 }						t_mat3;
 
 typedef struct			s_ivec {
-	int		v[2];
+	union {int v[2]; struct {int x; int y;};};
 }						t_ivec;
 
 typedef struct			s_texture {
@@ -92,13 +92,19 @@ typedef struct			s_entity {
 ** 		0 or positive:	The wall is a portal toward the sector of this index.
 ** 		-1:				Solid wall.
 **		-2:				End of wall. The next wall won't be drawn.
+** - tex: texture index.
+** - tex_span: offsets to add to the texture coordinates.
+** - tex_grad: gradiants by which to multiply the texture coordinates.
+** texture coordinates by default 
 */
 
 typedef struct			s_wall {
-	t_vec2			pos;
+	t_vec3			pos;
 	int				sector;
 	unsigned int	wall_reference;
-	unsigned int	texture;
+	unsigned int	tex;
+	t_vec2			tex_span;
+	t_vec2			tex_grad;
 }						t_wall;
 
 typedef struct			s_sector {
@@ -177,6 +183,20 @@ typedef struct			s_png {
 
 typedef struct s_env	t_env;
 
+/*
+** s_cam:
+** Contains variable local to the camera/viewport used for render:
+** - occlusion: Screen buffer of opacity of colors currently on the screen.
+** - occlusion_top: Number of pixels occluded on the top for each column.
+** - occlusion_bottom: Number of pixels occluded on the bottom for each column.
+** - occlusion_column: For each column wether it is occluded or not.
+** - clusters: Stack of clusters to be sorted in depth order before rendering.
+** - entities: Stack of entities to be sorted in depth order before rendering.
+** - visited_sectors: For each sector wether it has been visited during render.
+** - walls: Walls transformed into window space.
+** - rot: Position
+*/
+
 typedef struct			s_cam {
 	unsigned char	*occlusion;
 	int				*occlusion_top;
@@ -187,19 +207,13 @@ typedef struct			s_cam {
 	int				entities_count;
 	t_entity		*entities[ENTITY_STACK_SIZE];
 	char			*visited_sectors;
+	t_wall			*walls;
+	t_vec3			pos;
+	t_vec3			rot;
+	t_vec3			mat;
 }						t_cam;
 
-/*
-** s_win:
-** Contains variable local to the window including rendering data such as:
-** - occlusion: Screen buffer of opacity of colors currently on the screen.
-** - occlusion_top: Number of pixels occluded on the top for each column.
-** - occlusion_bottom: Number of pixels occluded on the bottom for each column.
-** - occlusion_column: For each column wether it is occluded or not.
-** - clusters: Stack of clusters to be sorted in depth order before rendering.
-** - entities: Stack of entities to be sorted in depth order before rendering.
-** - visited_sectors: For each sector wether it has been visited during render.
-*/
+
 
 typedef struct			s_win {
 	t_env			*env;
