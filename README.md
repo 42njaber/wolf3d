@@ -5,4 +5,4 @@ This project is a ray-casting first-person shooter
 ## Controls
 
 - ESC : quit the program
-- Arrow keys/Space/Shift : moves the camera arount
+- Arrow keys/Space/Shift : moves the camera around
